@@ -4,6 +4,7 @@ using Avalonia.Platform;
 using DynamicData;
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 
 namespace Baksteen.Avalonia.Blazor;
@@ -154,10 +155,20 @@ public class BlazorWebView : NativeControlHost
     {
         if(OperatingSystem.IsWindows())
         {
+            if(_serviceProvider != null)
+            {
+                if(_serviceProvider.GetService<BaksteenAvaloniaBlazorMarkerService>() is null)
+                {
+                    throw new InvalidOperationException(
+                        "Unable to find the required services. " +
+                        $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(AvaloniaBlazorWebViewServiceCollectionExtensions.AddAvaloniaBlazorWebView)}' in the application startup code.");
+                }
+            }
+
             _blazorWebView = new()
             {
                 HostPage = _hostPage,
-                Services = _serviceProvider,
+                Services = _serviceProvider!,
             };
             _blazorWebView.WebView.ZoomFactor = Math.Clamp(_zoomFactor, 0.1, 4.0);
             _blazorWebView.RootComponents.AddRange(_rootComponents);

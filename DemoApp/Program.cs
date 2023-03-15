@@ -7,6 +7,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
 using DemoApp.Data;
+using Baksteen.Avalonia.Blazor;
 
 namespace DemoApp;
 
@@ -20,8 +21,8 @@ internal class Program
     {
         var appBuilder = Host.CreateApplicationBuilder(args);
         appBuilder.Logging.AddDebug();
-        appBuilder.Services.AddWindowsFormsBlazorWebView();
-        appBuilder.Services.AddBlazorWebViewDeveloperTools();
+        appBuilder.Services.AddAvaloniaBlazorWebView();                 // this wraps: appBuilder.Services.AddWindowsFormsBlazorWebView();
+        appBuilder.Services.AddAvaloniaBlazorWebViewDeveloperTools();   // this wraps: appBuilder.Services.AddBlazorWebViewDeveloperTools();
         appBuilder.Services.AddSingleton<WeatherForecastService>();
         using var myApp = appBuilder.Build();
 
