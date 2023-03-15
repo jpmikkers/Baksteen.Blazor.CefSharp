@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -164,7 +166,7 @@ public class BlazorWebView : NativeControlHost
                 }
             }
 
-            _blazorWebView = new WinFormsBlazorWebViewProxy()
+            _blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
             {
                 HostPage = _hostPage,
                 Services = _serviceProvider!,
@@ -180,14 +182,14 @@ public class BlazorWebView : NativeControlHost
         return base.CreateNativeControlCore(parent);
     }
 
-    protected void OnBlazorWebViewInitializing(object? sender, BlazorWebViewInitializingEventArgs args)
+    protected void OnBlazorWebViewInitializing(object? sender, BaksteenBlazorWebViewInitializingEventArgs args)
     {
         // args.UserDataFolder
         // args.BrowserExecutableFolder
         // args.EnvironmentOptions
     }
 
-    protected void OnBlazorWebViewInitialized(object? sender, BlazorWebViewInitializedEventArgs args)
+    protected void OnBlazorWebViewInitialized(object? sender, BaksteenBlazorWebViewInitializedEventArgs args)
     {
     }
 

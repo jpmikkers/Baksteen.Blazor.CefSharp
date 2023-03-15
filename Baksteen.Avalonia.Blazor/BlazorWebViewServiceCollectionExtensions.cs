@@ -13,6 +13,7 @@ public static class AvaloniaBlazorWebViewServiceCollectionExtensions
 
     public static IServiceCollection AddAvaloniaBlazorWebViewDeveloperTools(this IServiceCollection services)
     {
-        return services.AddBlazorWebViewDeveloperTools();
+        services.AddBlazorWebViewDeveloperTools();
+        return services.AddSingleton<BaksteenBlazorWebViewDeveloperTools>(new BaksteenBlazorWebViewDeveloperTools { Enabled = true });
     }
 }

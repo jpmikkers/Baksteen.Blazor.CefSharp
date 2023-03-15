@@ -8,9 +8,16 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform;
+using System.ComponentModel.DataAnnotations;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
 
 namespace Baksteen.Avalonia.Blazor;
 
+/// <summary>
+/// Implementation of IBlazorWebView that uses the regular, unmodified BlazorWebView from Microsoft
+/// </summary>
 public class WinFormsBlazorWebViewProxy : IBlazorWebView
 {
     public IPlatformHandle Handle => new PlatformHandle(_original.Handle, "HWND");
@@ -35,22 +42,95 @@ public class WinFormsBlazorWebViewProxy : IBlazorWebView
 
     public WebView2 WebView => _original.WebView;
 
-    public EventHandler<UrlLoadingEventArgs>? UrlLoading
+    private EventHandler<UrlLoadingEventArgs>? _urlLoadingOriginal;
+    private EventHandler<BaksteenUrlLoadingEventArgs>? _urlLoading;
+
+    public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading
     {
-        get => _original.UrlLoading;
-        set => _original.UrlLoading = value;
+        get
+        {
+            return _urlLoading;
+        }
+
+        set
+        {
+            if(value != null)
+            {
+                _urlLoading = value;
+                _urlLoadingOriginal = new EventHandler<UrlLoadingEventArgs>(
+                    (sender, args) => _urlLoading(sender, 
+                    new BaksteenUrlLoadingEventArgs(args.Url, args.UrlLoadingStrategy)));
+                _original.UrlLoading = _urlLoadingOriginal;
+            }
+            else
+            {
+                _original.UrlLoading = null;
+                _urlLoadingOriginal = null;
+                _urlLoading = null;
+            }
+        }
     }
 
-    public EventHandler<BlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
+    private EventHandler<BlazorWebViewInitializingEventArgs>? _blazorWebViewInitializingOriginal;
+    private EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? _blazorWebViewInitializing;
+
+    public EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
     {
-        get => _original.BlazorWebViewInitializing;
-        set => _original.BlazorWebViewInitializing = value;
+        get
+        {
+            return _blazorWebViewInitializing;
+        }
+
+        set
+        {
+            if(value != null)
+            {
+                _blazorWebViewInitializing = value;
+                _blazorWebViewInitializingOriginal = new EventHandler<BlazorWebViewInitializingEventArgs>(
+                    (sender, args) => _blazorWebViewInitializing(sender,
+                    new BaksteenBlazorWebViewInitializingEventArgs
+                    {
+                        BrowserExecutableFolder = args.BrowserExecutableFolder,
+                        EnvironmentOptions = args.EnvironmentOptions,
+                        UserDataFolder = args.UserDataFolder
+                    }));
+                _original.BlazorWebViewInitializing = _blazorWebViewInitializingOriginal;
+            }
+            else
+            {
+                _original.BlazorWebViewInitializing = null;
+                _blazorWebViewInitializingOriginal = null;
+                _blazorWebViewInitializing = null;
+            }
+        }
     }
 
-    public EventHandler<BlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
+    private EventHandler<BlazorWebViewInitializedEventArgs>? _blazorWebViewInitializedOriginal;
+    private EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? _blazorWebViewInitialized;
+
+    public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
     {
-        get => _original.BlazorWebViewInitialized;
-        set => _original.BlazorWebViewInitialized = value;
+        get
+        {
+            return _blazorWebViewInitialized;
+        }
+        set 
+        {
+            if(value != null)
+            {
+                _blazorWebViewInitialized = value;
+                _blazorWebViewInitializedOriginal = new EventHandler<BlazorWebViewInitializedEventArgs>(
+                    (sender, args) => _blazorWebViewInitialized(sender,
+                    new BaksteenBlazorWebViewInitializedEventArgs { WebView = args.WebView }));
+                _original.BlazorWebViewInitialized = _blazorWebViewInitializedOriginal;
+            }
+            else
+            {
+                _original.BlazorWebViewInitializing = null;
+                _blazorWebViewInitializingOriginal = null;
+                _blazorWebViewInitializing = null;
+            }
+        }
     }
 
     public IFileProvider CreateFileProvider(string contentRootDir)

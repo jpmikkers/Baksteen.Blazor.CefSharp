@@ -13,6 +13,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -77,19 +80,19 @@ public interface IBlazorWebView : IDisposable
     /// </summary>
     [Category("Action")]
     [Description("Allows customizing how links are opened. By default, opens internal links in the webview and external links in an external app.")]
-    public EventHandler<UrlLoadingEventArgs>? UrlLoading { get; set; }
+    public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading { get; set; }
 
     /// <summary>
     /// Allows customizing the web view before it is created.
     /// </summary>
     [Category("Action")]
     [Description("Allows customizing the web view before it is created.")]
-    public EventHandler<BlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing { get; set; }
+    public EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing { get; set; }
 
     /// <summary>
     /// Allows customizing the web view after it is created.
     /// </summary>
     [Category("Action")]
     [Description("Allows customizing the web view after it is created.")]
-    public EventHandler<BlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized { get; set; }
+    public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized { get; set; }
 }
