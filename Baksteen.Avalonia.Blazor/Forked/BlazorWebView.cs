@@ -19,6 +19,7 @@ using BaksteenWindowsFormsDispatcher = Baksteen.AspNetCore.Components.WebView.Wi
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 {

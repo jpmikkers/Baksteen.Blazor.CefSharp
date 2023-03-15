@@ -54,14 +54,17 @@ using BaksteenAutoCloseOnReadCompleteStream = Baksteen.AspNetCore.Components.Web
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenBlazorWebViewDeveloperTools = Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebViewDeveloperTools;
+using BaksteenAvaloniaBlazorMarkerService = Baksteen.Avalonia.Blazor.BaksteenAvaloniaBlazorMarkerService;
+using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 
-namespace Baksteen.Avalonia.Blazor
+namespace Baksteen.AspNetCore.Components.WebView.WebView2
 {
     /// <summary>
     /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
     /// to render web content.
     /// </summary>
-    internal class BaksteenWebView2WebViewManager : WebViewManager
+    internal class WebView2WebViewManager : WebViewManager
     {
         // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
         // making it substantially faster. Note that this isn't real HTTP traffic, since
@@ -86,20 +89,20 @@ namespace Baksteen.Avalonia.Blazor
 		private readonly Action<BaksteenBlazorWebViewInitializedEventArgs> _blazorWebViewInitialized;
 		private readonly BaksteenBlazorWebViewDeveloperTools _developerTools;
 
-		/// <summary>
-		/// Constructs an instance of <see cref="WebView2WebViewManager"/>.
-		/// </summary>
-		/// <param name="webview">A <see cref="WebView2Control"/> to access platform-specific WebView2 APIs.</param>
-		/// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
-		/// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
-		/// <param name="fileProvider">Provides static content to the webview.</param>
-		/// <param name="jsComponents">Describes configuration for adding, removing, and updating root components from JavaScript code.</param>
-		/// <param name="contentRootRelativeToAppRoot">Path to the app's content root relative to the application root directory.</param>
-		/// <param name="hostPagePathWithinFileProvider">Path to the host page within the <paramref name="fileProvider"/>.</param>
-		/// <param name="urlLoading">Callback invoked when a url is about to load.</param>
-		/// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
-		/// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
-		internal BaksteenWebView2WebViewManager(
+        /// <summary>
+        /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
+        /// </summary>
+        /// <param name="webview">A <see cref="WebView2Control"/> to access platform-specific WebView2 APIs.</param>
+        /// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
+        /// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
+        /// <param name="fileProvider">Provides static content to the webview.</param>
+        /// <param name="jsComponents">Describes configuration for adding, removing, and updating root components from JavaScript code.</param>
+        /// <param name="contentRootRelativeToAppRoot">Path to the app's content root relative to the application root directory.</param>
+        /// <param name="hostPagePathWithinFileProvider">Path to the host page within the <paramref name="fileProvider"/>.</param>
+        /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
+        /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
+        /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
+        internal WebView2WebViewManager(
 			WebView2Control webview,
 			IServiceProvider services,
 			Dispatcher dispatcher,

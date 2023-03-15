@@ -9,6 +9,8 @@
 
 #if WINDOWS
 
+using System.Collections.Generic;
+using System.IO;
 #if WEBVIEW2_WINFORMS
 //using Microsoft.Web.WebView2.Core;
 #elif WEBVIEW2_WPF
@@ -29,11 +31,15 @@ using Windows.Storage.Streams;
 using Launcher = Windows.System.Launcher;
 #endif
 
-namespace Baksteen.Avalonia.Blazor
+namespace Baksteen.AspNetCore.Components.WebView
 {
-    internal class BaksteenBlazorWebViewDeveloperTools
+    internal static class StaticContentHotReloadManager
     {
-        public bool Enabled { get; set; } = false;
+        public static bool TryReplaceResponseContent(string contentRootRelativePath, string requestAbsoluteUri, ref int responseStatusCode, ref Stream responseContent, IDictionary<string, string> responseHeaders)
+        {
+			// TODO JMIK !!!
+			return true;
+        }
     }
 }
 
