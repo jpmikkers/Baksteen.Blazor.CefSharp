@@ -1,22 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using DynamicData;
 using Microsoft.AspNetCore.Components.WebView;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using System.Collections.Generic;
 
 namespace Baksteen.Avalonia.Blazor;
 
 public class BlazorWebView : NativeControlHost
 {
     private Uri _source = new Uri("http://localhost/");
-    private Microsoft.AspNetCore.Components.WebView.WindowsForms.BlazorWebView? _blazorWebView;
+    private IBlazorWebView? _blazorWebView;
     private double _zoomFactor = 1.0;
     private string? _hostPage;
     private IServiceProvider _serviceProvider = default!;
-    private RootComponentsCollection _rootComponents = new();
+    private List<ARootComponent> _rootComponents = new();
 
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="ZoomFactor" /> property.
@@ -33,8 +32,8 @@ public class BlazorWebView : NativeControlHost
             x => x.Services,
             (x, y) => x.Services = y);
 
-    public static readonly DirectProperty<BlazorWebView, RootComponentsCollection> RootComponentsProperty
-        = AvaloniaProperty.RegisterDirect<BlazorWebView, RootComponentsCollection>(
+    public static readonly DirectProperty<BlazorWebView, List<ARootComponent>> RootComponentsProperty
+        = AvaloniaProperty.RegisterDirect<BlazorWebView, List<ARootComponent>>(
             nameof(RootComponents),
             x => x.RootComponents,
             (x, y) => x.RootComponents = y);
@@ -139,7 +138,7 @@ public class BlazorWebView : NativeControlHost
         }
     }
 
-    public RootComponentsCollection RootComponents
+    public List<ARootComponent> RootComponents
     {
         get
         {
@@ -165,16 +164,17 @@ public class BlazorWebView : NativeControlHost
                 }
             }
 
-            _blazorWebView = new()
+            _blazorWebView = new WinFormsBlazorWebViewProxy()
             {
                 HostPage = _hostPage,
                 Services = _serviceProvider!,
             };
             _blazorWebView.WebView.ZoomFactor = Math.Clamp(_zoomFactor, 0.1, 4.0);
-            _blazorWebView.RootComponents.AddRange(_rootComponents);
+            //_blazorWebView.RootComponents.AddRange(_rootComponents); // this was used for the original winforms BlazorWebView
+            _blazorWebView.AddRootComponents(_rootComponents);
             _blazorWebView.BlazorWebViewInitialized = OnBlazorWebViewInitialized;
             _blazorWebView.BlazorWebViewInitializing = OnBlazorWebViewInitializing;
-            return new PlatformHandle(_blazorWebView.Handle, "HWND");
+            return _blazorWebView.Handle;
         }
 
         return base.CreateNativeControlCore(parent);

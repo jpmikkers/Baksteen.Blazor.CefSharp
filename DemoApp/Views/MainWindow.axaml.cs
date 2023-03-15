@@ -7,7 +7,7 @@ using Avalonia.Platform.Storage;
 using Avalonia.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using DemoApp.Data;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Baksteen.Avalonia.Blazor;
 
 namespace DemoApp.Views;
 
@@ -16,9 +16,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     public MainWindow()
     {
         var services = (Avalonia.Application.Current as App)?.Services;
-        var rootComponents = new RootComponentsCollection()
+        var rootComponents = new List<ARootComponent>()
         {
-            new RootComponent("#app", typeof(DemoApp.Main), null)
+            new ARootComponent("#app", typeof(DemoApp.Main), null)
         };
 
         Resources.Add("services", services);
