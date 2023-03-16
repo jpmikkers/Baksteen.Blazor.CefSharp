@@ -53,8 +53,6 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 
         internal Task AddToWebViewManagerAsync(WebView2WebViewManager webViewManager)
         {
-            //var parameterView = Parameters == null ? ParameterView.Empty : ParameterView.FromDictionary(Parameters);
-            //return webViewManager.AddRootComponentAsync(ComponentType, Selector, parameterView);
             var parameterView = Parameters == null ? ParameterView.Empty : ParameterView.FromDictionary(Parameters);
             return webViewManager.AddRootComponentAsync(ComponentType, Selector, parameterView);
         }
