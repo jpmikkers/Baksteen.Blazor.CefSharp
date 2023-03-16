@@ -22,10 +22,11 @@ public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
 {
     public IPlatformHandle Handle => new PlatformHandle(_original.Handle, "HWND");
     private readonly Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
-
+    private readonly WinFormsWebViewProxy _webViewProxy;
     public ForkedWinFormsBlazorWebViewProxy(Microsoft.Web.WebView2.WinForms.WebView2 webView)
     {
         _original = new(webView);
+        _webViewProxy = new(webView);
     }
 
     public string? HostPage
@@ -40,7 +41,7 @@ public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
         set => _original.Services = value;
     }
 
-    public WebView2 WebView => _original.WebView;
+    public IWebView WebView => _webViewProxy;
 
     public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading
     {

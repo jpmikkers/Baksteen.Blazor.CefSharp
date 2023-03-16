@@ -70,7 +70,7 @@ public interface IBlazorWebView : IDisposable
     JSComponentConfigurationStore JSComponents { get; }
 
     IServiceProvider Services { get; set; }
-    WebView2 WebView { get; }
+    IWebView WebView { get; }
 
     IFileProvider CreateFileProvider(string contentRootDir);
 
