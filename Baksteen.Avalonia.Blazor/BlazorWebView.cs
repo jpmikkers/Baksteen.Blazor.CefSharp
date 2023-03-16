@@ -193,6 +193,7 @@ public class BlazorWebView : NativeControlHost
     {
     }
 
+    // TODO JMIK : this doesn't seem to be called :/
     protected override void DestroyNativeControlCore(IPlatformHandle control)
     {
         if(OperatingSystem.IsWindows())

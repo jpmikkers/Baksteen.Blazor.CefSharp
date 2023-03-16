@@ -20,6 +20,7 @@ using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Component
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
 using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager;
+using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 {
@@ -192,8 +193,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
                 (args) => BlazorWebViewInitializing?.Invoke(this, args),
                 (args) => BlazorWebViewInitialized?.Invoke(this, args));
 
-            // TODO JMIK !!!
-            // BaksteenStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
+            BaksteenStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
 
             foreach(var rootComponent in RootComponents)
             {
