@@ -14,6 +14,16 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Forked\Parked\WebViewManager_combined.cs" />
+    <Compile Remove="Forked\Parked\WebViewManager_maui.cs" />
+    <Compile Remove="Forked\Parked\WebViewManager_wpf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Forked\Parked\WebViewManager_combined.cs" />
+    <None Include="Forked\Parked\WebViewManager_maui.cs" />
+    <None Include="Forked\Parked\WebViewManager_wpf.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.0-preview5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
