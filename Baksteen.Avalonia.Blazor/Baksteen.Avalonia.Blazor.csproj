@@ -16,11 +16,13 @@
   <ItemGroup>
     <Compile Remove="Forked\Parked\WebViewManager_combined.cs" />
     <Compile Remove="Forked\Parked\WebViewManager_maui.cs" />
+    <Compile Remove="Forked\Parked\WebViewManager_winforms.cs" />
     <Compile Remove="Forked\Parked\WebViewManager_wpf.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Forked\Parked\WebViewManager_combined.cs" />
     <None Include="Forked\Parked\WebViewManager_maui.cs" />
+    <None Include="Forked\Parked\WebViewManager_winforms.cs" />
     <None Include="Forked\Parked\WebViewManager_wpf.cs" />
   </ItemGroup>
   <ItemGroup>

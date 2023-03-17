@@ -19,7 +19,7 @@ using BaksteenWindowsFormsDispatcher = Baksteen.AspNetCore.Components.WebView.Wi
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
-using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager;
+using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManagerInterfaced;
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
@@ -30,6 +30,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
     public class BlazorWebView : ContainerControl
     {
         private readonly WebView2Control _webview;
+        private readonly IWebView _webViewProxy;
         private BaksteenWebView2WebViewManager? _webviewManager;
         private string? _hostPage;
         private IServiceProvider? _services;
@@ -45,6 +46,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 
             _webview = webView2Control;
             _webview.Dock = DockStyle.Fill;
+            _webViewProxy = new WinFormsWebViewProxy(_webview);
 
             Controls.Add(_webview);
         }
@@ -182,7 +184,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
             var fileProvider = CreateFileProvider(contentRootDirFullPath);
 
             _webviewManager = new BaksteenWebView2WebViewManager(
-                _webview,
+                _webViewProxy,
                 Services,
                 ComponentsDispatcher,
                 fileProvider,

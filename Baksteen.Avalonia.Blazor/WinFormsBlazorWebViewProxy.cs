@@ -122,7 +122,7 @@ public class WinFormsBlazorWebViewProxy : IBlazorWebView
                 _blazorWebViewInitialized = value;
                 _blazorWebViewInitializedOriginal = new EventHandler<BlazorWebViewInitializedEventArgs>(
                     (sender, args) => _blazorWebViewInitialized(sender,
-                    new BaksteenBlazorWebViewInitializedEventArgs { WebView = args.WebView }));
+                    new BaksteenBlazorWebViewInitializedEventArgs { WebView = new WinFormsWebViewProxy(args.WebView) }));
                 _original.BlazorWebViewInitialized = _blazorWebViewInitializedOriginal;
             }
             else

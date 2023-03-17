@@ -1,5 +1,6 @@
 ﻿namespace Baksteen.Avalonia.Blazor;
 
+using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
@@ -18,4 +19,11 @@ internal class WinFormsWebViewProxy : IWebView
 
     public Uri Source { get => _webView.Source; set => _webView.Source = value; }
     public double ZoomFactor { get => _webView.ZoomFactor; set => _webView.ZoomFactor = value; }
+
+    public CoreWebView2 CoreWebView2 { get => _webView.CoreWebView2; }
+
+    public Task EnsureCoreWebView2Async(CoreWebView2Environment environment)
+    {
+        return _webView.EnsureCoreWebView2Async(environment, null);
+    }
 }

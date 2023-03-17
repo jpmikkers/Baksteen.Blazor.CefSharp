@@ -1,6 +1,7 @@
 ﻿#define WEBVIEW2_WINFORMS
 using System;
 using System.Threading.Tasks;
+using Baksteen.Avalonia.Blazor;
 #if WEBVIEW2_WINFORMS
 using Microsoft.Web.WebView2.Core;
 using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
@@ -30,7 +31,7 @@ namespace Baksteen.AspNetCore.Components.WebView
         /// <summary>
         /// Gets the <see cref="WebView2Control"/> instance that was initialized.
         /// </summary>
-        public WebView2Control WebView { get; internal set; }
+        public IWebView WebView { get; internal set; }
 #elif ANDROID
 		/// <summary>
 		/// Gets the <see cref="AWebView"/> instance that was initialized.

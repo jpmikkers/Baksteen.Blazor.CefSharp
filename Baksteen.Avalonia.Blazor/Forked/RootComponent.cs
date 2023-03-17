@@ -8,7 +8,7 @@ using Baksteen.Avalonia.Blazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebView.WebView2;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using WebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager;
+using WebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManagerInterfaced;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 {

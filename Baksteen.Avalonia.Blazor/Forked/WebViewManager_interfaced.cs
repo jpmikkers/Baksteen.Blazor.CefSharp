@@ -1,6 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Baksteen.Avalonia.Blazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
@@ -21,7 +22,6 @@ using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
-using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 
 namespace Baksteen.AspNetCore.Components.WebView.WebView2
 {
@@ -29,7 +29,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
     /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
     /// to render web content.
     /// </summary>
-    internal class WebView2WebViewManager : WebViewManager
+    internal class WebView2WebViewManagerInterfaced : WebViewManager
     {
         // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
         // making it substantially faster. Note that this isn't real HTTP traffic, since
@@ -43,7 +43,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
         internal static readonly Uri AppOriginUri = new(AppOrigin);
 
-        private readonly WebView2Control _webview;
+        private readonly IWebView _webview;
         private readonly Task<bool> _webviewReadyTask;
         private readonly string _contentRootRelativeToAppRoot;
 
@@ -56,7 +56,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         /// <summary>
         /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
         /// </summary>
-        /// <param name="webview">A <see cref="WebView2Control"/> to access platform-specific WebView2 APIs.</param>
+        /// <param name="webview">A <see cref="IWebView"/> to access platform-specific WebView2 APIs.</param>
         /// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
         /// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
         /// <param name="fileProvider">Provides static content to the webview.</param>
@@ -66,8 +66,8 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
         /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
         /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
-        internal WebView2WebViewManager(
-			WebView2Control webview,
+        internal WebView2WebViewManagerInterfaced(
+			IWebView webview,
 			IServiceProvider services,
 			Dispatcher dispatcher,
 			IFileProvider fileProvider,
