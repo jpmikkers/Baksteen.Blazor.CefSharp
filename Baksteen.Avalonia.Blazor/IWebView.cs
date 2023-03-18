@@ -11,7 +11,7 @@ public interface IWebView
 {
     Uri Source { get; set; }
     double ZoomFactor { get; set; }
-    CoreWebView2 CoreWebView2 { get; }
+    ICoreWebView2 CoreWebView2 { get; }
 
     //
     // Summary:

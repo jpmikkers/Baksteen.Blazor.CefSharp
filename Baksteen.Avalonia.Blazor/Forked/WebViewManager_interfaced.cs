@@ -252,13 +252,13 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
         private void ApplyDefaultWebViewSettings(BaksteenBlazorWebViewDeveloperTools devTools)
         {
-            _webview.CoreWebView2.Settings.AreDevToolsEnabled = devTools.Enabled;
+            _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
 
             // Desktop applications typically don't want the default web browser context menu
-            _webview.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+            _webview.CoreWebView2.AreDefaultContextMenusEnabled = false;
 
             // Desktop applications almost never want to show a URL preview when hovering over a link
-            _webview.CoreWebView2.Settings.IsStatusBarEnabled = false;
+            _webview.CoreWebView2.IsStatusBarEnabled = false;
         }
 
 		private static string? GetWebView2UserDataFolder()

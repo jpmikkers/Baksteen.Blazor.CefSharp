@@ -11,16 +11,18 @@ using System.Threading.Tasks;
 internal class WinFormsWebViewProxy : IWebView
 {
     private readonly WebView2 _webView;
+    private readonly Lazy<CoreWebView2Proxy> _coreWebView2Proxy;
 
     public WinFormsWebViewProxy(WebView2 webView2)
     {
         _webView = webView2;
+        _coreWebView2Proxy = new(() => new CoreWebView2Proxy(_webView.CoreWebView2));
     }
 
     public Uri Source { get => _webView.Source; set => _webView.Source = value; }
     public double ZoomFactor { get => _webView.ZoomFactor; set => _webView.ZoomFactor = value; }
 
-    public CoreWebView2 CoreWebView2 { get => _webView.CoreWebView2; }
+    public ICoreWebView2 CoreWebView2 { get => _coreWebView2Proxy.Value; }
 
     public Task EnsureCoreWebView2Async(CoreWebView2Environment environment)
     {
