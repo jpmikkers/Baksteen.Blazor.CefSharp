@@ -16,9 +16,9 @@ public partial class MainWindow : ReactiveWindow<MainWindowViewModel>
     public MainWindow()
     {
         var services = (Avalonia.Application.Current as App)?.Services;
-        var rootComponents = new List<ARootComponent>()
+        var rootComponents = new List<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent>()
         {
-            new ARootComponent("#app", typeof(DemoApp.Main), null)
+            new Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent("#app", typeof(DemoApp.Main), null)
         };
 
         Resources.Add("services", services);

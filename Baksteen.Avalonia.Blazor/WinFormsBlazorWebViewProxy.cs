@@ -147,7 +147,7 @@ public class WinFormsBlazorWebViewProxy : IBlazorWebView
     // TODO: wrap this? .. use AddRootComponents and JSComponents property for now
     //public RootComponentsCollection RootComponents => _original.RootComponents;
 
-    public void AddRootComponents(IEnumerable<ARootComponent> rootComponents)
+    public void AddRootComponents(IEnumerable<AspNetCore.Components.WebView.WindowsForms.RootComponent> rootComponents)
     {
         _original.RootComponents.AddRange(rootComponents.Select(x => new RootComponent(x.Selector, x.ComponentType, x.Parameters)));
     }
