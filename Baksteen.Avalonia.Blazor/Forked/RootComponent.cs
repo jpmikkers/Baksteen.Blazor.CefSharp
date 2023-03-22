@@ -51,13 +51,13 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         /// </summary>
         public IDictionary<string, object?>? Parameters { get; }
 
-        internal Task AddToWebViewManagerAsync(WebView2WebViewManager webViewManager)
+        internal Task AddToWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webViewManager)
         {
             var parameterView = Parameters == null ? ParameterView.Empty : ParameterView.FromDictionary(Parameters);
             return webViewManager.AddRootComponentAsync(ComponentType, Selector, parameterView);
         }
 
-        internal Task RemoveFromWebViewManagerAsync(WebView2WebViewManager webviewManager)
+        internal Task RemoveFromWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webviewManager)
         {
             return webviewManager.RemoveRootComponentAsync(Selector);
         }

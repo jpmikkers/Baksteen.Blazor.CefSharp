@@ -30,4 +30,7 @@
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Forked\BlazorWebView_Pure.cs" />
+  </ItemGroup>
 </Project>

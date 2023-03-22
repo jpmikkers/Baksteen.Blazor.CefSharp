@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenRootComponent = Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent;
+using Baksteen.AspNetCore.Components.WebView.WindowsForms;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -167,12 +168,19 @@ public class BlazorWebView : NativeControlHost
                 }
             }
 
-            // use Baksteen fork of BlazorWebView that operates on a WinForms WebView2
-            _blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
+            // use PureBlazorWebView that operates on a WinForms WebView2
+            _blazorWebView = new BlazorWebViewPure(new Microsoft.Web.WebView2.WinForms.WebView2())
             {
                 HostPage = _hostPage,
                 Services = _serviceProvider!,
             };
+
+            // use Baksteen fork of BlazorWebView that operates on a WinForms WebView2
+            //_blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
+            //{
+            //    HostPage = _hostPage,
+            //    Services = _serviceProvider!,
+            //};
 
             // use original WinForms BlazorWebView
             //_blazorWebView = new WinFormsBlazorWebViewProxy()
