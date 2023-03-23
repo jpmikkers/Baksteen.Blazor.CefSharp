@@ -2,6 +2,8 @@
 
 using Microsoft.Web.WebView2.Core;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 internal class CoreWebView2Proxy : ICoreWebView2
@@ -26,28 +28,115 @@ internal class CoreWebView2Proxy : ICoreWebView2
         set => _coreWebView2.Settings.IsStatusBarEnabled = value;
     }
 
-    public event EventHandler<CoreWebView2WebResourceRequestedEventArgs> WebResourceRequested
+    private bool _onWebResourceRequestedCoupled;
+    private event EventHandler<WebResourceRequestedEventArgs>? _onWebResourceRequested;
+
+    public event EventHandler<WebResourceRequestedEventArgs> WebResourceRequested
     {
         add
         {
-            _coreWebView2.WebResourceRequested += value;
+            _onWebResourceRequested += value;
+            if(!_onWebResourceRequestedCoupled)
+            {
+                _coreWebView2.WebResourceRequested += ConvertWebResourceRequested;
+                _onWebResourceRequestedCoupled = true;
+            }
         }
         remove
         {
-            _coreWebView2.WebResourceRequested -= value;
+            _onWebResourceRequested -= value;
+            if(_onWebResourceRequested==null && _onWebResourceRequestedCoupled)
+            {
+                _coreWebView2.WebResourceRequested -= ConvertWebResourceRequested;
+                _onWebResourceRequestedCoupled = false;
+            }
         }
     }
 
-    public event EventHandler<CoreWebView2NavigationStartingEventArgs> NavigationStarting
+    private protected static string GetHeaderString(IDictionary<string, string> headers) =>
+    string.Join(Environment.NewLine, headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+
+    private void ConvertWebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
+    {
+        var tmp = new WebResourceRequestedEventArgs
+        {            
+            ResourceContext = e.ResourceContext,
+        };
+
+        if(e.Request!=null)
+        {
+            tmp.Request = new()
+            {
+                Content = e.Request.Content,
+                Headers = new System.Collections.Generic.Dictionary<string, string>(e.Request.Headers),
+                Method = e.Request.Method,
+                Uri = e.Request.Uri
+            };
+        }
+
+        if(e.Response != null)
+    {
+            tmp.Response = new()
+        {
+                Content = e.Response.Content,
+                Headers = new System.Collections.Generic.Dictionary<string, string>(e.Response.Headers),
+                ReasonPhrase = e.Response.ReasonPhrase,
+                StatusCode = e.Response.StatusCode,
+            };
+        }
+
+        //if(e.GetDeferral() != null)
+        //{
+        //    tmp.Deferral = e.GetDeferral();
+        //}
+
+        _onWebResourceRequested?.Invoke(this, tmp);
+
+        if(tmp.Response!=null)
+        {
+            e.Response = _coreWebView2.Environment.CreateWebResourceResponse(tmp.Response.Content, tmp.Response.StatusCode, tmp.Response.ReasonPhrase, GetHeaderString(tmp.Response.Headers));
+        }
+    }
+
+    private bool _onNavigationStartingCoupled = false;
+    private event EventHandler<NavigationStartingEventArgs>? _onNavigationStarting;
+
+    public event EventHandler<NavigationStartingEventArgs> NavigationStarting
     {
         add
         {
-            _coreWebView2.NavigationStarting += value;
+            _onNavigationStarting += value;
+
+            if(!_onNavigationStartingCoupled)
+            {
+                _coreWebView2.NavigationStarting += ConvertNavigationStarting;
+                _onNavigationStartingCoupled = true;
+            }
         }
         remove
         {
-            _coreWebView2.NavigationStarting -= value;
+            _onNavigationStarting -= value;
+
+            if(_onNavigationStarting == null && _onNavigationStartingCoupled)
+            {
+                _coreWebView2.NavigationStarting -= ConvertNavigationStarting;
+                _onNavigationStartingCoupled = false;
+            }
         }
+    }
+
+    private void ConvertNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
+    {
+        _onNavigationStarting?.Invoke(this, new NavigationStartingEventArgs
+        {
+            AdditionalAllowedFrameAncestors = e.AdditionalAllowedFrameAncestors,
+            Cancel = e.Cancel,
+            IsRedirected = e.IsRedirected,
+            IsUserInitiated = e.IsUserInitiated,
+            NavigationId = e.NavigationId,
+            RequestHeaders = new System.Collections.Generic.Dictionary<string, string>(e.RequestHeaders),
+            Uri = e.Uri,
+        });
     }
 
     public event EventHandler<CoreWebView2NewWindowRequestedEventArgs> NewWindowRequested
@@ -62,21 +151,16 @@ internal class CoreWebView2Proxy : ICoreWebView2
         }
     }
 
-    public event EventHandler<CoreWebView2WebMessageReceivedEventArgs> WebMessageReceived
-    {
-        add
-        {
-            _coreWebView2.WebMessageReceived += value;
-        }
-        remove
-        {
-            _coreWebView2.WebMessageReceived -= value;
-        }
-    }
+    public event EventHandler<WebMessageReceivedEventArgs>? WebMessageReceived;
 
     public CoreWebView2Proxy(CoreWebView2 coreWebView2)
     {
         _coreWebView2 = coreWebView2;
+        _coreWebView2.WebMessageReceived += (s, e) => { WebMessageReceived?.Invoke(this, new WebMessageReceivedEventArgs {
+            Uri = new Uri(e.Source), 
+            WebMessage = e.TryGetWebMessageAsString()
+        }
+        ); };
     }
 
     public Task<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)

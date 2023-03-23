@@ -169,18 +169,18 @@ public class BlazorWebView : NativeControlHost
             }
 
             // use PureBlazorWebView that operates on a WinForms WebView2
-            _blazorWebView = new BlazorWebViewPure(new Microsoft.Web.WebView2.WinForms.WebView2())
-            {
-                HostPage = _hostPage,
-                Services = _serviceProvider!,
-            };
-
-            // use Baksteen fork of BlazorWebView that operates on a WinForms WebView2
-            //_blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
+            //_blazorWebView = new BlazorWebViewPure(new Microsoft.Web.WebView2.WinForms.WebView2())
             //{
             //    HostPage = _hostPage,
             //    Services = _serviceProvider!,
             //};
+
+            // use Baksteen fork of BlazorWebView that operates on a WinForms WebView2
+            _blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
+            {
+                HostPage = _hostPage,
+                Services = _serviceProvider!,
+            };
 
             // use original WinForms BlazorWebView
             //_blazorWebView = new WinFormsBlazorWebViewProxy()

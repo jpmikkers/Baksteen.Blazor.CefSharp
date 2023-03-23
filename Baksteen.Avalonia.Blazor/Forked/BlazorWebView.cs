@@ -38,6 +38,13 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         /// <summary>
         /// Creates a new instance of <see cref="BlazorWebView"/>.
         /// </summary>
+        public BlazorWebView() : this(new WebView2Control())
+		{
+		}
+
+        /// <summary>
+        /// Creates a new instance of <see cref="BlazorWebView"/>.
+        /// </summary>
         public BlazorWebView(WebView2Control webView2Control)
         {
             ComponentsDispatcher = new BaksteenWindowsFormsDispatcher(this);
@@ -84,7 +91,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
             set
             {
                 _hostPage = value;
-                OnHostPagePropertyChanged();
+                StartWebViewCoreIfPossible();
             }
         }
 
@@ -113,7 +120,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
             set
             {
                 _services = value;
-                OnServicesPropertyChanged();
+                StartWebViewCoreIfPossible();
             }
         }
 
@@ -138,10 +145,6 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         [Category("Action")]
         [Description("Allows customizing the web view after it is created.")]
         public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized;
-
-        private void OnHostPagePropertyChanged() => StartWebViewCoreIfPossible();
-
-        private void OnServicesPropertyChanged() => StartWebViewCoreIfPossible();
 
         private bool RequiredStartupPropertiesSet =>
             Created &&

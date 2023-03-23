@@ -169,11 +169,44 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
             QueueBlazorStart();
 
-            _webview.CoreWebView2.WebMessageReceived += (s, e) => MessageReceived(new Uri(e.Source), e.TryGetWebMessageAsString());
+            _webview.CoreWebView2.WebMessageReceived += (s, e) => MessageReceived(e.Uri!, e.WebMessage!);
 
             return true;
         }
 
+        /// <summary>
+        /// Handles outbound URL requests.
+        /// </summary>
+        /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
+        protected virtual Task HandleWebResourceRequest(WebResourceRequestedEventArgs eventArgs)
+        {
+            // Unlike server-side code, we get told exactly why the browser is making the request,
+            // so we can be smarter about fallback. We can ensure that 'fetch' requests never result
+            // in fallback, for example.
+            var allowFallbackOnHostPage =
+                eventArgs.ResourceContext == CoreWebView2WebResourceContext.Document ||
+                eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
+
+            var requestUri = Baksteen.AspNetCore.Components.WebView.QueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
+
+            if(TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
+            {
+                BaksteenStaticContentHotReloadManager.TryReplaceResponseContent(_contentRootRelativeToAppRoot, requestUri, ref statusCode, ref content, headers);
+
+                var autoCloseStream = new BaksteenAutoCloseOnReadCompleteStream(content);
+
+                eventArgs.Response = new WebResourceResponse
+                {
+                    Content = autoCloseStream,
+                    Headers = new Dictionary<string, string>(headers),  // new Dictionary<string, string>(tmpResponse.Headers),
+                    ReasonPhrase = statusMessage,                       // tmpResponse.ReasonPhrase,
+                    StatusCode = statusCode,                            // tmpResponse.StatusCode,
+                };
+            }
+            return Task.CompletedTask;
+        }
+
+#if NEVER
         /// <summary>
         /// Handles outbound URL requests.
         /// </summary>
@@ -201,7 +234,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 			}
             return Task.CompletedTask;
         }
-
+#endif
         /// <summary>
         /// Override this method to queue a call to Blazor.start(). Not all platforms require this.
         /// </summary>
@@ -209,7 +242,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         {
         }
 
-        private void CoreWebView2_NavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs args)
+        private void CoreWebView2_NavigationStarting(object? sender, NavigationStartingEventArgs args)
         {
             if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
             {
