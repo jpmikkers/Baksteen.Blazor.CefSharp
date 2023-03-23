@@ -1,7 +1,5 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
-using Avalonia.Platform;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using System;
@@ -15,7 +13,12 @@ namespace Baksteen.Avalonia.Blazor;
 
 public interface IBlazorWebView : IDisposable
 {
-    public IPlatformHandle Handle { get; }
+    /// <summary>
+    /// returns a platform specific object that can be used to retrieve a platform specific handle, or the handle itself
+    /// For now this is the convention:
+    /// Windows & Winforms -> this should return a System.Windows.Forms.Control
+    /// </summary>
+    public object PlatformSpecificComponent { get; }
 
     string? HostPage { get; set; }
 

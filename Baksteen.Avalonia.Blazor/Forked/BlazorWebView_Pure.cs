@@ -132,7 +132,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
             }
         }
 
-        public IPlatformHandle Handle => new PlatformHandle(_wrapperControl.Handle, "HWND");
+        public object PlatformSpecificComponent => _wrapperControl;
 
         // TODO: wrap this? .. use AddRootComponents and JSComponents property for now
         //public RootComponentsCollection RootComponents => _original.RootComponents;

@@ -7,7 +7,6 @@ using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Platform;
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
@@ -20,7 +19,7 @@ namespace Baksteen.Avalonia.Blazor;
 /// </summary>
 public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
 {
-    public IPlatformHandle Handle => new PlatformHandle(_original.Handle, "HWND");
+    public object PlatformSpecificComponent => _original;
     private readonly Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
     private readonly WinFormsWebViewProxy _webViewProxy;
     public ForkedWinFormsBlazorWebViewProxy(Microsoft.Web.WebView2.WinForms.WebView2 webView)

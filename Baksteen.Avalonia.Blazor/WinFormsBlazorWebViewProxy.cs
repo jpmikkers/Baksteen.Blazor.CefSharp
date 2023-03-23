@@ -20,7 +20,7 @@ namespace Baksteen.Avalonia.Blazor;
 /// </summary>
 public class WinFormsBlazorWebViewProxy : IBlazorWebView
 {
-    public IPlatformHandle Handle => new PlatformHandle(_original.Handle, "HWND");
+    public object PlatformSpecificComponent => _original;
     private readonly Microsoft.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
     private readonly WinFormsWebViewProxy _webViewProxy;
     public WinFormsBlazorWebViewProxy()
