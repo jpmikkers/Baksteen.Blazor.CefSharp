@@ -1,12 +1,13 @@
 ﻿namespace Baksteen.Avalonia.Blazor;
 
+using Baksteen.Avalonia.Blazor.Contract;
 using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-internal class CoreWebView2Proxy : ICoreWebView2
+internal class CoreWebView2Proxy : IBSCoreWebView
 {
     private readonly CoreWebView2 _coreWebView2;
 
@@ -29,9 +30,9 @@ internal class CoreWebView2Proxy : ICoreWebView2
     }
 
     private bool _onWebResourceRequestedCoupled;
-    private event EventHandler<WebResourceRequestedEventArgs>? _onWebResourceRequested;
+    private event EventHandler<BSWebResourceRequestedEventArgs>? _onWebResourceRequested;
 
-    public event EventHandler<WebResourceRequestedEventArgs> WebResourceRequested
+    public event EventHandler<BSWebResourceRequestedEventArgs> WebResourceRequested
     {
         add
         {
@@ -58,7 +59,7 @@ internal class CoreWebView2Proxy : ICoreWebView2
 
     private void ConvertWebResourceRequested(object? sender, CoreWebView2WebResourceRequestedEventArgs e)
     {
-        var tmp = new WebResourceRequestedEventArgs
+        var tmp = new BSWebResourceRequestedEventArgs
         {            
             ResourceContext = e.ResourceContext,
         };
@@ -99,9 +100,9 @@ internal class CoreWebView2Proxy : ICoreWebView2
     }
 
     private bool _onNavigationStartingCoupled = false;
-    private event EventHandler<NavigationStartingEventArgs>? _onNavigationStarting;
+    private event EventHandler<BSNavigationStartingEventArgs>? _onNavigationStarting;
 
-    public event EventHandler<NavigationStartingEventArgs> NavigationStarting
+    public event EventHandler<BSNavigationStartingEventArgs> NavigationStarting
     {
         add
         {
@@ -127,7 +128,7 @@ internal class CoreWebView2Proxy : ICoreWebView2
 
     private void ConvertNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
     {
-        _onNavigationStarting?.Invoke(this, new NavigationStartingEventArgs
+        _onNavigationStarting?.Invoke(this, new BSNavigationStartingEventArgs
         {
             AdditionalAllowedFrameAncestors = e.AdditionalAllowedFrameAncestors,
             Cancel = e.Cancel,
@@ -151,12 +152,12 @@ internal class CoreWebView2Proxy : ICoreWebView2
         }
     }
 
-    public event EventHandler<WebMessageReceivedEventArgs>? WebMessageReceived;
+    public event EventHandler<BSWebMessageReceivedEventArgs>? WebMessageReceived;
 
     public CoreWebView2Proxy(CoreWebView2 coreWebView2)
     {
         _coreWebView2 = coreWebView2;
-        _coreWebView2.WebMessageReceived += (s, e) => { WebMessageReceived?.Invoke(this, new WebMessageReceivedEventArgs {
+        _coreWebView2.WebMessageReceived += (s, e) => { WebMessageReceived?.Invoke(this, new BSWebMessageReceivedEventArgs {
             Uri = new Uri(e.Source), 
             WebMessage = e.TryGetWebMessageAsString()
         }

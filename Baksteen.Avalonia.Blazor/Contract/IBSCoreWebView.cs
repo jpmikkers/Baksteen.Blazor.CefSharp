@@ -2,9 +2,9 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Avalonia.Blazor.Contract;
 
-public interface ICoreWebView2
+public interface IBSCoreWebView
 {
     //
     // Summary:
@@ -114,7 +114,7 @@ public interface ICoreWebView2
     //     Microsoft.Web.WebView2.Core.CoreWebView2.NewWindowRequested handler it should
     //     be called after the new window is set. For more details see Microsoft.Web.WebView2.Core.CoreWebView2NewWindowRequestedEventArgs.NewWindow.
     //     Currently this only supports file, http, and https URI schemes.
-    event EventHandler<WebResourceRequestedEventArgs> WebResourceRequested;
+    event EventHandler<BSWebResourceRequestedEventArgs> WebResourceRequested;
 
     //
     // Summary:
@@ -125,7 +125,7 @@ public interface ICoreWebView2
     //     Redirects raise this event as well, and the navigation id is the same as the
     //     original one. You may block corresponding navigations until the event handler
     //     returns.
-    event EventHandler<NavigationStartingEventArgs> NavigationStarting;
+    event EventHandler<BSNavigationStartingEventArgs> NavigationStarting;
 
     //
     // Summary:
@@ -184,6 +184,6 @@ public interface ICoreWebView2
     //     event to happen before anything else, then in the WebMessageReceived handler
     //     you can post a message back to the page and have the page wait until it receives
     //     that message before continuing.
-    public event EventHandler<WebMessageReceivedEventArgs> WebMessageReceived;
+    public event EventHandler<BSWebMessageReceivedEventArgs> WebMessageReceived;
 
 }

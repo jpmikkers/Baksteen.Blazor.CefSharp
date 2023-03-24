@@ -16,11 +16,12 @@ using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Baksteen.Avalonia.Blazor;
 using BaksteenWindowsFormsDispatcher = Baksteen.AspNetCore.Components.WebView.WindowsForms.WindowsFormsDispatcher;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManagerInterfaced;
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
+using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
 {
@@ -30,7 +31,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
     public class BlazorWebView : ContainerControl
     {
         private readonly WebView2Control _webview;
-        private readonly IWebView _webViewProxy;
+        private readonly IBSWebView _webViewProxy;
         private BaksteenWebView2WebViewManager? _webviewManager;
         private string? _hostPage;
         private IServiceProvider? _services;
@@ -100,12 +101,12 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         private bool ShouldSerializeHostPage() => !string.IsNullOrEmpty(HostPage);
 
         /// <summary>
-        /// A collection of <see cref="RootComponent"/> instances that specify the Blazor <see cref="IComponent"/> types
+        /// A collection of <see cref="BSRootComponent"/> instances that specify the Blazor <see cref="IComponent"/> types
         /// to be used directly in the specified <see cref="HostPage"/>.
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponentsCollection RootComponents { get; } = new();
+        public BSRootComponentsCollection RootComponents { get; } = new();
 
         /// <summary>
         /// Gets or sets an <see cref="IServiceProvider"/> containing services to be used by this control and also by application code.
@@ -216,8 +217,8 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
                 // Dispatch because this is going to be async, and we want to catch any errors
                 _ = ComponentsDispatcher.InvokeAsync(async () =>
                 {
-                    var newItems = (eventArgs.NewItems ?? Array.Empty<object>()).Cast<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent>();
-                    var oldItems = (eventArgs.OldItems ?? Array.Empty<object>()).Cast<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent>();
+                    var newItems = (eventArgs.NewItems ?? Array.Empty<object>()).Cast<BSRootComponent>();
+                    var oldItems = (eventArgs.OldItems ?? Array.Empty<object>()).Cast<BSRootComponent>();
 
                     foreach(var item in newItems.Except(oldItems))
                     {

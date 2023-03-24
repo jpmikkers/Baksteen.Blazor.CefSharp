@@ -1,31 +1,27 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.AspNetCore.Components;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Baksteen.Avalonia.Blazor;
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.WebView.WebView2;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using WebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManagerInterfaced;
 
-namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     /// <summary>
     /// Describes a root component that can be added to a <see cref="BlazorWebView"/>.
     /// </summary>
-    public class RootComponent
+    public class BSRootComponent
     {
         /// <summary>
-        /// Constructs an instance of <see cref="RootComponent"/>.
+        /// Constructs an instance of <see cref="BSRootComponent"/>.
         /// </summary>
         /// <param name="selector">The CSS selector string that specifies where in the document the component should be placed. This must be unique among the root components within the <see cref="BlazorWebView"/>.</param>
         /// <param name="componentType">The type of the root component. This type must implement <see cref="IComponent"/>.</param>
         /// <param name="parameters">An optional dictionary of parameters to pass to the root component.</param>
-        public RootComponent(string selector, Type componentType, IDictionary<string, object?>? parameters)
+        public BSRootComponent(string selector, Type componentType, IDictionary<string, object?>? parameters)
         {
-            if(string.IsNullOrWhiteSpace(selector))
+            if (string.IsNullOrWhiteSpace(selector))
             {
                 throw new ArgumentException($"'{nameof(selector)}' cannot be null or whitespace.", nameof(selector));
             }

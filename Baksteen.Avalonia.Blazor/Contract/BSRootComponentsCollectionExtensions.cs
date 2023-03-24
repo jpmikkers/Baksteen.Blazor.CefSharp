@@ -3,14 +3,13 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 
-namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     /// <summary>
     /// Provides a set of extension methods for modifying collections of <see cref="IComponent"/> objects.
     /// </summary>
-    public static class RootComponentCollectionExtensions
+    public static class BSRootComponentCollectionExtensions
     {
         /// <summary>
         /// Adds the component specified by <typeparamref name="TComponent"/> to the collection specified by
@@ -21,10 +20,10 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         /// <param name="components">The collection to which the component should be added.</param>
         /// <param name="selector">The selector to which the component will be associated.</param>
         /// <param name="parameters">The optional creation parameters for the component.</param>
-        public static void Add<TComponent>(this RootComponentsCollection components, string selector, IDictionary<string, object?>? parameters = null)
-           // where TComponent : IComponent
+        public static void Add<TComponent>(this BSRootComponentsCollection components, string selector, IDictionary<string, object?>? parameters = null)
+        // where TComponent : IComponent
         {
-            components.Add(new RootComponent(selector, typeof(TComponent), parameters));
+            components.Add(new BSRootComponent(selector, typeof(TComponent), parameters));
         }
 
         /// <summary>
@@ -33,11 +32,11 @@ namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
         /// </summary>
         /// <param name="components">The collection from which the component associated with the selector should be removed.</param>
         /// <param name="selector">The selector associated with the component to be removed.</param>
-        public static void Remove(this RootComponentsCollection components, string selector)
+        public static void Remove(this BSRootComponentsCollection components, string selector)
         {
-            for(var i = 0; i < components.Count; i++)
+            for (var i = 0; i < components.Count; i++)
             {
-                if(components[i].Selector.Equals(selector, StringComparison.Ordinal))
+                if (components[i].Selector.Equals(selector, StringComparison.Ordinal))
                 {
                     components.RemoveAt(i);
                     return;

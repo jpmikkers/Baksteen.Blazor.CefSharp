@@ -9,16 +9,17 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform;
 using System.ComponentModel.DataAnnotations;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
+using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor;
 
 /// <summary>
 /// Implementation of IBlazorWebView that uses the regular, unmodified BlazorWebView from Microsoft
 /// </summary>
-public class WinFormsBlazorWebViewProxy : IBlazorWebView
+public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
 {
     public object PlatformSpecificComponent => _original;
     private readonly Microsoft.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
@@ -41,7 +42,7 @@ public class WinFormsBlazorWebViewProxy : IBlazorWebView
         set => _original.Services = value;
     }
 
-    public IWebView WebView => _webViewProxy;
+    public IBSWebView WebView => _webViewProxy;
 
     private EventHandler<UrlLoadingEventArgs>? _urlLoadingOriginal;
     private EventHandler<BaksteenUrlLoadingEventArgs>? _urlLoading;
@@ -147,7 +148,7 @@ public class WinFormsBlazorWebViewProxy : IBlazorWebView
     // TODO: wrap this? .. use AddRootComponents and JSComponents property for now
     //public RootComponentsCollection RootComponents => _original.RootComponents;
 
-    public void AddRootComponents(IEnumerable<AspNetCore.Components.WebView.WindowsForms.RootComponent> rootComponents)
+    public void AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
         _original.RootComponents.AddRange(rootComponents.Select(x => new RootComponent(x.Selector, x.ComponentType, x.Parameters)));
     }

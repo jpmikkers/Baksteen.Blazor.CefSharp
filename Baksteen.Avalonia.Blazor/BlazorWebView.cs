@@ -5,21 +5,21 @@ using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenRootComponent = Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent;
-using Baksteen.AspNetCore.Components.WebView.WindowsForms;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenRootComponent = Baksteen.Avalonia.Blazor.Contract.BSRootComponent;
+using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor;
 
 public class BlazorWebView : NativeControlHost
 {
     private Uri _source = new Uri("http://localhost/");
-    private IBlazorWebView? _blazorWebView;
+    private IBSBlazorWebView? _blazorWebView;
     private double _zoomFactor = 1.0;
     private string? _hostPage;
     private IServiceProvider _serviceProvider = default!;
-    private List<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent> _rootComponents = new();
+    private List<BaksteenRootComponent> _rootComponents = new();
 
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="ZoomFactor" /> property.
@@ -142,7 +142,7 @@ public class BlazorWebView : NativeControlHost
         }
     }
 
-    public List<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent> RootComponents
+    public List<BaksteenRootComponent> RootComponents
     {
         get
         {

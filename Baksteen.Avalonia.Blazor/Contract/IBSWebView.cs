@@ -1,17 +1,14 @@
 ﻿using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
 using System;
-using System.Drawing;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Avalonia.Blazor.Contract;
 
-public interface IWebView
+public interface IBSWebView
 {
     Uri Source { get; set; }
     double ZoomFactor { get; set; }
-    ICoreWebView2 CoreWebView2 { get; }
+    IBSCoreWebView CoreWebView2 { get; }
 
     //
     // Summary:

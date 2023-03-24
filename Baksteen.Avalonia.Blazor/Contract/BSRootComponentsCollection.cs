@@ -1,16 +1,15 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using System.Collections.ObjectModel;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using System.Collections.ObjectModel;
 
-namespace Baksteen.AspNetCore.Components.WebView.WindowsForms
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     /// <summary>
-    /// A collection of <see cref="RootComponent"/> items.
+    /// A collection of <see cref="BSRootComponent"/> items.
     /// </summary>
-    public class RootComponentsCollection : ObservableCollection<Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent>, IJSComponentConfiguration
+    public class BSRootComponentsCollection : ObservableCollection<BSRootComponent>, IJSComponentConfiguration
     {
         /// <inheritdoc />
         public JSComponentConfigurationStore JSComponents { get; } = new();

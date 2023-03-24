@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Baksteen.Avalonia.Blazor;
+using Baksteen.Avalonia.Blazor.Contract;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
@@ -16,12 +17,10 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using BaksteenAutoCloseOnReadCompleteStream = Baksteen.AspNetCore.Components.WebView.WebView2.AutoCloseOnReadCompleteStream;
-using BaksteenAvaloniaBlazorMarkerService = Baksteen.Avalonia.Blazor.BaksteenAvaloniaBlazorMarkerService;
-using BaksteenBlazorWebViewDeveloperTools = Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebViewDeveloperTools;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
-using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 
 namespace Baksteen.AspNetCore.Components.WebView.WebView2
 {
@@ -43,7 +42,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
         internal static readonly Uri AppOriginUri = new(AppOrigin);
 
-        private readonly IWebView _webview;
+        private readonly IBSWebView _webview;
         private readonly Task<bool> _webviewReadyTask;
         private readonly string _contentRootRelativeToAppRoot;
 
@@ -51,12 +50,12 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 		private readonly Action<BaksteenUrlLoadingEventArgs> _urlLoading;
 		private readonly Action<BaksteenBlazorWebViewInitializingEventArgs> _blazorWebViewInitializing;
 		private readonly Action<BaksteenBlazorWebViewInitializedEventArgs> _blazorWebViewInitialized;
-		private readonly BaksteenBlazorWebViewDeveloperTools _developerTools;
+		private readonly BSBlazorWebViewDeveloperTools _developerTools;
 
         /// <summary>
         /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
         /// </summary>
-        /// <param name="webview">A <see cref="IWebView"/> to access platform-specific WebView2 APIs.</param>
+        /// <param name="webview">A <see cref="IBSWebView"/> to access platform-specific WebView2 APIs.</param>
         /// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
         /// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
         /// <param name="fileProvider">Provides static content to the webview.</param>
@@ -67,7 +66,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
         /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
         internal WebView2WebViewManagerInterfaced(
-			IWebView webview,
+			IBSWebView webview,
 			IServiceProvider services,
 			Dispatcher dispatcher,
 			IFileProvider fileProvider,
@@ -93,7 +92,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 			_urlLoading = urlLoading;
 			_blazorWebViewInitializing = blazorWebViewInitializing;
 			_blazorWebViewInitialized = blazorWebViewInitialized;
-			_developerTools = services.GetRequiredService<BaksteenBlazorWebViewDeveloperTools>();
+			_developerTools = services.GetRequiredService<BSBlazorWebViewDeveloperTools>();
 			_contentRootRelativeToAppRoot = contentRootRelativeToAppRoot;
 
 			// Unfortunately the CoreWebView2 can only be instantiated asynchronously.
@@ -178,7 +177,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         /// Handles outbound URL requests.
         /// </summary>
         /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
-        protected virtual Task HandleWebResourceRequest(WebResourceRequestedEventArgs eventArgs)
+        protected virtual Task HandleWebResourceRequest(BSWebResourceRequestedEventArgs eventArgs)
         {
             // Unlike server-side code, we get told exactly why the browser is making the request,
             // so we can be smarter about fallback. We can ensure that 'fetch' requests never result
@@ -195,7 +194,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
                 var autoCloseStream = new BaksteenAutoCloseOnReadCompleteStream(content);
 
-                eventArgs.Response = new WebResourceResponse
+                eventArgs.Response = new BSWebResourceResponse
                 {
                     Content = autoCloseStream,
                     Headers = new Dictionary<string, string>(headers),  // new Dictionary<string, string>(tmpResponse.Headers),
@@ -242,7 +241,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         {
         }
 
-        private void CoreWebView2_NavigationStarting(object? sender, NavigationStartingEventArgs args)
+        private void CoreWebView2_NavigationStarting(object? sender, BSNavigationStartingEventArgs args)
         {
             if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
             {
@@ -283,7 +282,7 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
         private protected static string GetHeaderString(IDictionary<string, string> headers) =>
             string.Join(Environment.NewLine, headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
 
-        private void ApplyDefaultWebViewSettings(BaksteenBlazorWebViewDeveloperTools devTools)
+        private void ApplyDefaultWebViewSettings(BSBlazorWebViewDeveloperTools devTools)
         {
             _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
 

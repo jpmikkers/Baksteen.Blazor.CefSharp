@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace Baksteen.Avalonia.Blazor
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     //
     // Summary:
     //     An HTTP request used with the Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceRequested
     //     event.
-    public class WebResourceRequest
+    public class BSWebResourceRequest
     {
         //
         // Summary:

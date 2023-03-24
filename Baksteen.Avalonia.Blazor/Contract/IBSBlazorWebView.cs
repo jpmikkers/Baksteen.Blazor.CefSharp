@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
-using BaksteenRootComponent = Baksteen.AspNetCore.Components.WebView.WindowsForms.RootComponent;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
+using BaksteenRootComponent = Baksteen.Avalonia.Blazor.Contract.BSRootComponent;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Avalonia.Blazor.Contract;
 
-public interface IBlazorWebView : IDisposable
+public interface IBSBlazorWebView : IDisposable
 {
     /// <summary>
     /// returns a platform specific object that can be used to retrieve a platform specific handle, or the handle itself
@@ -29,7 +29,7 @@ public interface IBlazorWebView : IDisposable
     JSComponentConfigurationStore JSComponents { get; }
 
     IServiceProvider Services { get; set; }
-    IWebView WebView { get; }
+    IBSWebView WebView { get; }
 
     IFileProvider CreateFileProvider(string contentRootDir);
 

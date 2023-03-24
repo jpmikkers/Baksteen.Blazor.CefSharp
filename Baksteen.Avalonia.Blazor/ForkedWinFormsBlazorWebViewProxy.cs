@@ -7,9 +7,10 @@ using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
+using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -17,7 +18,7 @@ namespace Baksteen.Avalonia.Blazor;
 /// Implementation of IBlazorWebView that uses a forked version of the WinForms BlazorWebView, 
 /// which allows injection of the WebView2 component in its constructor.
 /// </summary>
-public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
+public class ForkedWinFormsBlazorWebViewProxy : IBSBlazorWebView
 {
     public object PlatformSpecificComponent => _original;
     private readonly Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
@@ -40,7 +41,7 @@ public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
         set => _original.Services = value;
     }
 
-    public IWebView WebView => _webViewProxy;
+    public IBSWebView WebView => _webViewProxy;
 
     public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading
     {
@@ -73,7 +74,7 @@ public class ForkedWinFormsBlazorWebViewProxy : IBlazorWebView
     // TODO: wrap this? .. use AddRootComponents and JSComponents property for now
     //public RootComponentsCollection RootComponents => _original.RootComponents;
 
-    public void AddRootComponents(IEnumerable<AspNetCore.Components.WebView.WindowsForms.RootComponent> rootComponents)
+    public void AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
         _original.RootComponents.AddRange(rootComponents);
     }

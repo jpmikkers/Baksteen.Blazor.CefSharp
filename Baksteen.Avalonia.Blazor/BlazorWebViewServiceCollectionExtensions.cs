@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using BaksteenBlazorWebViewDeveloperTools = Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebViewDeveloperTools;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -15,6 +14,6 @@ public static class AvaloniaBlazorWebViewServiceCollectionExtensions
     public static IServiceCollection AddAvaloniaBlazorWebViewDeveloperTools(this IServiceCollection services)
     {
         services.AddBlazorWebViewDeveloperTools();
-        return services.AddSingleton<BaksteenBlazorWebViewDeveloperTools>(new BaksteenBlazorWebViewDeveloperTools { Enabled = true });
+        return services.AddSingleton<BSBlazorWebViewDeveloperTools>(new BSBlazorWebViewDeveloperTools { Enabled = true });
     }
 }

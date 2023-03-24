@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Components.WebView;
 
-namespace Baksteen.AspNetCore.Components.WebView
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     /// <summary>
     /// Used to provide information about a link (<![CDATA[<a>]]>) clicked within a Blazor WebView.
@@ -10,9 +10,9 @@ namespace Baksteen.AspNetCore.Components.WebView
     /// browser and the UrlLoading event won't be called.
     /// </para>
     /// </summary>
-    public class UrlLoadingEventArgs : EventArgs
+    public class BSUrlLoadingEventArgs : EventArgs
     {
-        internal static UrlLoadingEventArgs CreateWithDefaultLoadingStrategy(Uri urlToLoad, Uri appOriginUri)
+        internal static BSUrlLoadingEventArgs CreateWithDefaultLoadingStrategy(Uri urlToLoad, Uri appOriginUri)
         {
             var strategy = appOriginUri.IsBaseOf(urlToLoad) ?
                 UrlLoadingStrategy.OpenInWebView :
@@ -21,7 +21,7 @@ namespace Baksteen.AspNetCore.Components.WebView
             return new(urlToLoad, strategy);
         }
 
-        public UrlLoadingEventArgs(Uri url, UrlLoadingStrategy urlLoadingStrategy)
+        public BSUrlLoadingEventArgs(Uri url, UrlLoadingStrategy urlLoadingStrategy)
         {
             Url = url;
             UrlLoadingStrategy = urlLoadingStrategy;

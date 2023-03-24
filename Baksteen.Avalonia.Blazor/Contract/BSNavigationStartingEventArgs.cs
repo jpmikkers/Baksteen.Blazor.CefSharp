@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
-namespace Baksteen.Avalonia.Blazor
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     //
     // Summary:
     //     Event args for the Microsoft.Web.WebView2.Core.CoreWebView2.NavigationStarting
     //     event.
-    public class NavigationStartingEventArgs : EventArgs
+    public class BSNavigationStartingEventArgs : EventArgs
     {
         //
         // Summary:
@@ -50,7 +49,7 @@ namespace Baksteen.Avalonia.Blazor
         // Remarks:
         //     Note, you are not able to modify the HTTP request headers in a Microsoft.Web.WebView2.Core.CoreWebView2.NavigationStarting
         //     event.
-        public Dictionary<string,string> RequestHeaders
+        public Dictionary<string, string> RequestHeaders
         {
             get; set;
         } = new();

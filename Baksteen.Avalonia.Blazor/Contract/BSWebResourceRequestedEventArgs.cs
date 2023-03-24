@@ -1,17 +1,13 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using Microsoft.Web.WebView2.Core.Raw;
-using Microsoft.Web.WebView2.Core;
+﻿using Microsoft.Web.WebView2.Core;
+using System;
 
-namespace Baksteen.Avalonia.Blazor
+namespace Baksteen.Avalonia.Blazor.Contract
 {
-
-
     //
     // Summary:
     //     Event args for the Microsoft.Web.WebView2.Core.CoreWebView2.WebResourceRequested
     //     event.
-    public class WebResourceRequestedEventArgs : EventArgs
+    public class BSWebResourceRequestedEventArgs : EventArgs
     {
         //
         // Summary:
@@ -20,7 +16,7 @@ namespace Baksteen.Avalonia.Blazor
         // Remarks:
         //     The request object may be missing some headers that are added by network stack
         //     at a later time.
-        public WebResourceRequest Request
+        public BSWebResourceRequest Request
         {
             get; set;
         } = default!;
@@ -35,7 +31,7 @@ namespace Baksteen.Avalonia.Blazor
         //     event will be completed with this Response. An empty Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse
         //     object can be created with Microsoft.Web.WebView2.Core.CoreWebView2Environment.CreateWebResourceResponse(System.IO.Stream,System.Int32,System.String,System.String)
         //     and then modified to construct the Response.
-        public WebResourceResponse Response
+        public BSWebResourceResponse Response
         {
             get; set;
         } = default!;

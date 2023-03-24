@@ -17,12 +17,12 @@ using WebKit;
 using TWebView = Tizen.WebView.WebView;
 #endif
 
-namespace Baksteen.AspNetCore.Components.WebView
+namespace Baksteen.Avalonia.Blazor.Contract
 {
     /// <summary>
     /// Allows configuring the underlying web view when the application is initializing.
     /// </summary>
-    public class BlazorWebViewInitializingEventArgs : EventArgs
+    public class BSBlazorWebViewInitializingEventArgs : EventArgs
     {
 #nullable disable
 #if WINDOWS
