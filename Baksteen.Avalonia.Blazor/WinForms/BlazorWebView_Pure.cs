@@ -1,63 +1,76 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Baksteen.Avalonia.Blazor;
+using Baksteen.Avalonia.Blazor.Contract;
+using Baksteen.Avalonia.Blazor.WinForms;
+using DynamicData;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.FileProviders;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Windows.Forms;
-using Microsoft.AspNetCore.Components.WebView.WebView2;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
 using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Baksteen.Avalonia.Blazor;
-using BaksteenWindowsFormsDispatcher = Baksteen.AspNetCore.Components.WebView.WindowsForms.WindowsFormsDispatcher;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
-using BaksteenWebView2WebViewManager = Baksteen.AspNetCore.Components.WebView.WebView2.WebView2WebViewManagerInterfaced;
-using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
-using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.AspNetCore.Components.WebView.WindowsForms;
 
 /// <summary>
 /// A Windows Forms control for hosting Razor components locally in Windows desktop applications.
 /// </summary>
-public class BlazorWebView : ContainerControl
+public class BlazorWebViewPure : IBSBlazorWebView
 {
-    private readonly WebView2Control _webview;
+    private class WrapperControl : ContainerControl
+    {
+        public Action? AfterCreateControl { get; set; }
+        public Action? BeforeDisposeControl { get; set; }
+
+        public WrapperControl() : base()
+        {
+        }
+
+        protected override void OnCreateControl()
+        {
+            base.OnCreateControl();
+            AfterCreateControl?.Invoke();
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing)
+            {
+                BeforeDisposeControl?.Invoke();
+            }
+            base.Dispose(disposing);
+        }
+    }
+
+    private WrapperControl _wrapperControl;
     private readonly IBSWebView _webViewProxy;
-    private BaksteenWebView2WebViewManager? _webviewManager;
+    private BSWebViewManager? _webviewManager;
     private string? _hostPage;
     private IServiceProvider? _services;
 
     /// <summary>
-    /// Creates a new instance of <see cref="BlazorWebView"/>.
+    /// Allows customizing how links are opened.
+    /// By default, opens internal links in the webview and external links in an external app.
     /// </summary>
-    public BlazorWebView() : this(new WebView2Control())
-		{
-		}
+    public EventHandler<BSUrlLoadingEventArgs>? UrlLoading { get; set; }
 
     /// <summary>
-    /// Creates a new instance of <see cref="BlazorWebView"/>.
+    /// Allows customizing the web view before it is created.
     /// </summary>
-    public BlazorWebView(WebView2Control webView2Control)
-    {
-        ComponentsDispatcher = new BaksteenWindowsFormsDispatcher(this);
+    public EventHandler<BSBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing { get; set; }
 
-        RootComponents.CollectionChanged += HandleRootComponentsCollectionChanged;
-
-        _webview = webView2Control;
-        _webview.Dock = DockStyle.Fill;
-        _webViewProxy = new WinFormsWebViewProxy(_webview);
-
-        Controls.Add(_webview);
-    }
+    /// <summary>
+    /// Allows customizing the web view after it is created.
+    /// </summary>
+    public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized { get; set; }
 
     /// <summary>
     /// Returns the inner <see cref="WebView2Control"/> used by this control.
@@ -66,19 +79,9 @@ public class BlazorWebView : ContainerControl
     /// Directly using some functionality of the inner web view can cause unexpected results because its behavior
     /// is controlled by the <see cref="BlazorWebView"/> that is hosting it.
     /// </remarks>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public WebView2Control WebView => _webview;
+    public IBSWebView WebView => _webViewProxy;
 
     private Microsoft.AspNetCore.Components.Dispatcher ComponentsDispatcher { get; }
-
-    /// <inheritdoc cref="Control.OnCreateControl" />
-    protected override void OnCreateControl()
-    {
-        base.OnCreateControl();
-
-        StartWebViewCoreIfPossible();
-    }
 
     /// <summary>
     /// Path to the host page within the application's static files. For example, <code>wwwroot\index.html</code>.
@@ -97,24 +100,19 @@ public class BlazorWebView : ContainerControl
     }
 
     // Learn more about these methods here: https://docs.microsoft.com/en-us/dotnet/desktop/winforms/controls/defining-default-values-with-the-shouldserialize-and-reset-methods?view=netframeworkdesktop-4.8
-    private void ResetHostPage() => HostPage = null;
-    private bool ShouldSerializeHostPage() => !string.IsNullOrEmpty(HostPage);
+    //private void ResetHostPage() => HostPage = null;
+    //private bool ShouldSerializeHostPage() => !string.IsNullOrEmpty(HostPage);
 
     /// <summary>
     /// A collection of <see cref="BSRootComponent"/> instances that specify the Blazor <see cref="IComponent"/> types
     /// to be used directly in the specified <see cref="HostPage"/>.
     /// </summary>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
     public BSRootComponentsCollection RootComponents { get; } = new();
 
     /// <summary>
     /// Gets or sets an <see cref="IServiceProvider"/> containing services to be used by this control and also by application code.
     /// This property must be set to a valid value for the Razor components to start.
     /// </summary>
-    [Browsable(false)]
-    [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    [DisallowNull]
     public IServiceProvider Services
     {
         get => _services!;
@@ -125,31 +123,44 @@ public class BlazorWebView : ContainerControl
         }
     }
 
-    /// <summary>
-    /// Allows customizing how links are opened.
-    /// By default, opens internal links in the webview and external links in an external app.
-    /// </summary>
-    [Category("Action")]
-    [Description("Allows customizing how links are opened. By default, opens internal links in the webview and external links in an external app.")]
-    public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading;
+    public object PlatformSpecificComponent => _wrapperControl;
+
+    // TODO: wrap this? .. use AddRootComponents and JSComponents property for now
+    //public RootComponentsCollection RootComponents => _original.RootComponents;
+    public JSComponentConfigurationStore JSComponents => this.RootComponents.JSComponents;
 
     /// <summary>
-    /// Allows customizing the web view before it is created.
+    /// Creates a new instance of <see cref="BlazorWebView"/>.
     /// </summary>
-    [Category("Action")]
-    [Description("Allows customizing the web view before it is created.")]
-    public EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing;
+    public BlazorWebViewPure(WebView2Control webView2Control)
+    {
+        _wrapperControl = new();
 
-    /// <summary>
-    /// Allows customizing the web view after it is created.
-    /// </summary>
-    [Category("Action")]
-    [Description("Allows customizing the web view after it is created.")]
-    public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized;
+        _wrapperControl.AfterCreateControl = () => 
+        { 
+            StartWebViewCoreIfPossible(); 
+        };
+
+        _wrapperControl.BeforeDisposeControl = () => 
+        {
+            _webviewManager?
+                .DisposeAsync()
+                .AsTask()
+                .GetAwaiter()
+                .GetResult();
+        };
+
+        ComponentsDispatcher = new BSWindowsFormsDispatcher(_wrapperControl);
+
+        RootComponents.CollectionChanged += HandleRootComponentsCollectionChanged;
+
+        webView2Control.Dock = DockStyle.Fill;
+        _webViewProxy = new WinFormsWebViewProxy(webView2Control);
+        _wrapperControl.Controls.Add(webView2Control);
+    }
 
     private bool RequiredStartupPropertiesSet =>
-        Created &&
-        _webview != null &&
+        _wrapperControl.Created &&
         HostPage != null &&
         Services != null;
 
@@ -157,7 +168,7 @@ public class BlazorWebView : ContainerControl
     {
         // We never start the Blazor code in design time because it doesn't make sense to run
         // a Razor component in the designer.
-        if(IsAncestorSiteInDesignMode)
+        if(_wrapperControl.IsAncestorSiteInDesignMode)
         {
             return;
         }
@@ -187,7 +198,7 @@ public class BlazorWebView : ContainerControl
 
         var fileProvider = CreateFileProvider(contentRootDirFullPath);
 
-        _webviewManager = new BaksteenWebView2WebViewManager(
+        _webviewManager = new BSWebViewManager(
             _webViewProxy,
             Services,
             ComponentsDispatcher,
@@ -199,7 +210,7 @@ public class BlazorWebView : ContainerControl
             (args) => BlazorWebViewInitializing?.Invoke(this, args),
             (args) => BlazorWebViewInitialized?.Invoke(this, args));
 
-        BaksteenStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
+        BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
 
         foreach(var rootComponent in RootComponents)
         {
@@ -241,7 +252,7 @@ public class BlazorWebView : ContainerControl
     /// </summary>
     /// <param name="contentRootDir">The base directory to use for all requested assets, such as <c>wwwroot</c>.</param>
     /// <returns>Returns a <see cref="IFileProvider"/> for static assets.</returns>
-    public virtual IFileProvider CreateFileProvider(string contentRootDir)
+    public IFileProvider CreateFileProvider(string contentRootDir)
     {
         if(Directory.Exists(contentRootDir))
         {
@@ -256,21 +267,18 @@ public class BlazorWebView : ContainerControl
         }
     }
 
-    /// <inheritdoc cref="Control.Dispose(bool)" />
-    protected override void Dispose(bool disposing)
+    public void AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
-        if(disposing)
+        this.RootComponents.AddRange(rootComponents);
+    }
+
+    public void Dispose()
+    {
+        var wc = Interlocked.Exchange(ref _wrapperControl!, null);
+
+        if(wc != null)
         {
-            // Dispose this component's contents and block on completion so that user-written disposal logic and
-            // Razor component disposal logic will complete first. Then call base.Dispose(), which will dispose
-            // the WebView2 control. This order is critical because once the WebView2 is disposed it will prevent
-            // Razor component code from working because it requires the WebView to exist.
-            _webviewManager?
-                .DisposeAsync()
-                .AsTask()
-                .GetAwaiter()
-                .GetResult();
+            wc.Dispose();
         }
-        base.Dispose(disposing);
     }
 }

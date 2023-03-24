@@ -12,7 +12,7 @@ using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contr
 using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 using Baksteen.Avalonia.Blazor.Contract;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Avalonia.Blazor.WinForms;
 
 /// <summary>
 /// Implementation of IBlazorWebView that uses a forked version of the WinForms BlazorWebView, 
@@ -21,9 +21,9 @@ namespace Baksteen.Avalonia.Blazor;
 public class ForkedWinFormsBlazorWebViewProxy : IBSBlazorWebView
 {
     public object PlatformSpecificComponent => _original;
-    private readonly Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
+    private readonly AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
     private readonly WinFormsWebViewProxy _webViewProxy;
-    public ForkedWinFormsBlazorWebViewProxy(Microsoft.Web.WebView2.WinForms.WebView2 webView)
+    public ForkedWinFormsBlazorWebViewProxy(WebView2 webView)
     {
         _original = new(webView);
         _webViewProxy = new(webView);

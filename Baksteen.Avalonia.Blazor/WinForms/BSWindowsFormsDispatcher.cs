@@ -8,28 +8,28 @@ using System.Windows.Forms;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 
-namespace Baksteen.AspNetCore.Components.WebView.WindowsForms;
+namespace Baksteen.Avalonia.Blazor.WinForms;
 
 /// <summary>
 /// Dispatcher implementation for Windows Forms that invokes methods on the UI thread. The <see cref="Dispatcher"/>
 /// class uses the async <see cref="Task"/> pattern so everything must be mapped from the <see cref="IAsyncResult"/>
 /// pattern using techniques listed in https://docs.microsoft.com/dotnet/standard/asynchronous-programming-patterns/interop-with-other-asynchronous-patterns-and-types.
 /// </summary>
-internal sealed class WindowsFormsDispatcher : Dispatcher
+internal sealed class BSWindowsFormsDispatcher : Dispatcher
 {
     private static Action<Exception> RethrowException = exception =>
         ExceptionDispatchInfo.Capture(exception).Throw();
     private readonly Control _dispatchThreadControl;
 
     /// <summary>
-    /// Creates a new instance of <see cref="WindowsFormsDispatcher"/>.
+    /// Creates a new instance of <see cref="BSWindowsFormsDispatcher"/>.
     /// </summary>
     /// <param name="dispatchThreadControl">A control that was created on the thread from which UI dispatches must
     /// occur. This can typically be any control because all controls must have been created on the UI thread to
     /// begin with.</param>
-    public WindowsFormsDispatcher(Control dispatchThreadControl)
+    public BSWindowsFormsDispatcher(Control dispatchThreadControl)
     {
-        if(dispatchThreadControl is null)
+        if (dispatchThreadControl is null)
         {
             throw new ArgumentNullException(nameof(dispatchThreadControl));
         }
@@ -44,7 +44,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
     {
         try
         {
-            if(CheckAccess())
+            if (CheckAccess())
             {
                 workItem();
             }
@@ -54,7 +54,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                 await Task.Factory.FromAsync(asyncResult, _dispatchThreadControl.EndInvoke);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             // TODO: Determine whether this is the right kind of rethrowing pattern
             // You do have to do something like this otherwise unhandled exceptions
@@ -68,7 +68,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
     {
         try
         {
-            if(CheckAccess())
+            if (CheckAccess())
             {
                 await workItem();
             }
@@ -88,7 +88,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                         await workItem();
                         tcs.TrySetResult();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         tcs.TrySetException(ex);
                     }
@@ -98,7 +98,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                 await Task.WhenAll(tcs.Task, Task.Factory.FromAsync(asyncResult, _dispatchThreadControl.EndInvoke));
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             // TODO: Determine whether this is the right kind of rethrowing pattern
             // You do have to do something like this otherwise unhandled exceptions
@@ -112,7 +112,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
     {
         try
         {
-            if(CheckAccess())
+            if (CheckAccess())
             {
                 return workItem();
             }
@@ -122,7 +122,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                 return await Task<TResult>.Factory.FromAsync(asyncResult, result => (TResult)_dispatchThreadControl.EndInvoke(result)!);
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             // TODO: Determine whether this is the right kind of rethrowing pattern
             // You do have to do something like this otherwise unhandled exceptions
@@ -136,7 +136,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
     {
         try
         {
-            if(CheckAccess())
+            if (CheckAccess())
             {
                 return await workItem();
             }
@@ -156,7 +156,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                         var result = await workItem();
                         tcs.TrySetResult(result);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         tcs.TrySetException(ex);
                     }
@@ -167,7 +167,7 @@ internal sealed class WindowsFormsDispatcher : Dispatcher
                 return await tcs.Task;
             }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             // TODO: Determine whether this is the right kind of rethrowing pattern
             // You do have to do something like this otherwise unhandled exceptions

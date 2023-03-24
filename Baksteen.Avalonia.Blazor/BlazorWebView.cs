@@ -9,6 +9,7 @@ using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Cont
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
 using BaksteenRootComponent = Baksteen.Avalonia.Blazor.Contract.BSRootComponent;
 using Baksteen.Avalonia.Blazor.Contract;
+using Baksteen.Avalonia.Blazor.WinForms;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -160,7 +161,7 @@ public class BlazorWebView : NativeControlHost
         {
             if(_serviceProvider != null)
             {
-                if(_serviceProvider.GetService<BaksteenAvaloniaBlazorMarkerService>() is null)
+                if(_serviceProvider.GetService<BSAvaloniaBlazorMarkerService>() is null)
                 {
                     throw new InvalidOperationException(
                         "Unable to find the required services. " +

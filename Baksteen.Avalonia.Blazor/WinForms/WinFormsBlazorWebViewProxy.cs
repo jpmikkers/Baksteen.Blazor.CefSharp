@@ -14,7 +14,7 @@ using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contr
 using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 using Baksteen.Avalonia.Blazor.Contract;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Avalonia.Blazor.WinForms;
 
 /// <summary>
 /// Implementation of IBlazorWebView that uses the regular, unmodified BlazorWebView from Microsoft
@@ -56,11 +56,11 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
 
         set
         {
-            if(value != null)
+            if (value != null)
             {
                 _urlLoading = value;
                 _urlLoadingOriginal = new EventHandler<UrlLoadingEventArgs>(
-                    (sender, args) => _urlLoading(sender, 
+                    (sender, args) => _urlLoading(sender,
                     new BaksteenUrlLoadingEventArgs(args.Url, args.UrlLoadingStrategy)));
                 _original.UrlLoading = _urlLoadingOriginal;
             }
@@ -85,7 +85,7 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
 
         set
         {
-            if(value != null)
+            if (value != null)
             {
                 _blazorWebViewInitializing = value;
                 _blazorWebViewInitializingOriginal = new EventHandler<BlazorWebViewInitializingEventArgs>(
@@ -116,9 +116,9 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
         {
             return _blazorWebViewInitialized;
         }
-        set 
+        set
         {
-            if(value != null)
+            if (value != null)
             {
                 _blazorWebViewInitialized = value;
                 _blazorWebViewInitializedOriginal = new EventHandler<BlazorWebViewInitializedEventArgs>(

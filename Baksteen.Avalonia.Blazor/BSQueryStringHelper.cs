@@ -5,18 +5,18 @@
 
 using System;
 
-namespace Baksteen.AspNetCore.Components.WebView;
+namespace Baksteen.Avalonia.Blazor;
 
-internal static class QueryStringHelper
+internal static class BSQueryStringHelper
 {
     public static string RemovePossibleQueryString(string? url)
     {
-        if(string.IsNullOrEmpty(url))
+        if (string.IsNullOrEmpty(url))
         {
             return string.Empty;
         }
         var indexOfQueryString = url.IndexOf('?', StringComparison.Ordinal);
-        return (indexOfQueryString == -1)
+        return indexOfQueryString == -1
             ? url
             : url.Substring(0, indexOfQueryString);
     }

@@ -7,7 +7,7 @@ public static class AvaloniaBlazorWebViewServiceCollectionExtensions
 {
     public static IServiceCollection AddAvaloniaBlazorWebView(this IServiceCollection services)
     {
-        services.TryAddSingleton<BaksteenAvaloniaBlazorMarkerService>();
+        services.TryAddSingleton<BSAvaloniaBlazorMarkerService>();
         return services.AddWindowsFormsBlazorWebView().Services;
     }
 

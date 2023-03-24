@@ -1,7 +1,6 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Baksteen.Avalonia.Blazor;
 using Baksteen.Avalonia.Blazor.Contract;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -16,19 +15,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using BaksteenAutoCloseOnReadCompleteStream = Baksteen.AspNetCore.Components.WebView.WebView2.AutoCloseOnReadCompleteStream;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
-using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 
-namespace Baksteen.AspNetCore.Components.WebView.WebView2;
+namespace Baksteen.Avalonia.Blazor;
 
 /// <summary>
 /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
 /// to render web content.
 /// </summary>
-internal class WebView2WebViewManagerInterfaced : WebViewManager
+internal class BSWebViewManager : WebViewManager
 {
     // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
     // making it substantially faster. Note that this isn't real HTTP traffic, since
@@ -46,11 +40,11 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
     private readonly Task<bool> _webviewReadyTask;
     private readonly string _contentRootRelativeToAppRoot;
 
-		private protected CoreWebView2Environment? _coreWebView2Environment;
-		private readonly Action<BaksteenUrlLoadingEventArgs> _urlLoading;
-		private readonly Action<BaksteenBlazorWebViewInitializingEventArgs> _blazorWebViewInitializing;
-		private readonly Action<BaksteenBlazorWebViewInitializedEventArgs> _blazorWebViewInitialized;
-		private readonly BSBlazorWebViewDeveloperTools _developerTools;
+    private protected CoreWebView2Environment? _coreWebView2Environment;
+    private readonly Action<BSUrlLoadingEventArgs> _urlLoading;
+    private readonly Action<BSBlazorWebViewInitializingEventArgs> _blazorWebViewInitializing;
+    private readonly Action<BSBlazorWebViewInitializedEventArgs> _blazorWebViewInitialized;
+    private readonly BSBlazorWebViewDeveloperTools _developerTools;
 
     /// <summary>
     /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
@@ -65,41 +59,41 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
     /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
     /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
     /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
-    internal WebView2WebViewManagerInterfaced(
-			IBSWebView webview,
-			IServiceProvider services,
-			Dispatcher dispatcher,
-			IFileProvider fileProvider,
-			JSComponentConfigurationStore jsComponents,
-			string contentRootRelativeToAppRoot,
-			string hostPagePathWithinFileProvider,
-			Action<BaksteenUrlLoadingEventArgs> urlLoading,
-			Action<BaksteenBlazorWebViewInitializingEventArgs> blazorWebViewInitializing,
-			Action<BaksteenBlazorWebViewInitializedEventArgs> blazorWebViewInitialized)
-			: base(services, dispatcher, AppOriginUri, fileProvider, jsComponents, hostPagePathWithinFileProvider)
+    internal BSWebViewManager(
+            IBSWebView webview,
+            IServiceProvider services,
+            Dispatcher dispatcher,
+            IFileProvider fileProvider,
+            JSComponentConfigurationStore jsComponents,
+            string contentRootRelativeToAppRoot,
+            string hostPagePathWithinFileProvider,
+            Action<BSUrlLoadingEventArgs> urlLoading,
+            Action<BSBlazorWebViewInitializingEventArgs> blazorWebViewInitializing,
+            Action<BSBlazorWebViewInitializedEventArgs> blazorWebViewInitialized)
+            : base(services, dispatcher, AppOriginUri, fileProvider, jsComponents, hostPagePathWithinFileProvider)
 
-		{
-			ArgumentNullException.ThrowIfNull(webview);
+    {
+        ArgumentNullException.ThrowIfNull(webview);
 
-			if (services.GetService<BaksteenAvaloniaBlazorMarkerService>() is null)
-			{
-				throw new InvalidOperationException(
-					"Unable to find the required services. " +
-					$"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BlazorWebViewServiceCollectionExtensions.AddWindowsFormsBlazorWebView)}' in the application startup code.");
-			}
+        if (services.GetService<BSAvaloniaBlazorMarkerService>() is null)
+        {
+            throw new InvalidOperationException(
+                "Unable to find the required services. " +
+                $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BlazorWebViewServiceCollectionExtensions.AddWindowsFormsBlazorWebView)}' in the application startup code.");
+        }
 
-			_webview = webview;
-			_urlLoading = urlLoading;
-			_blazorWebViewInitializing = blazorWebViewInitializing;
-			_blazorWebViewInitialized = blazorWebViewInitialized;
-			_developerTools = services.GetRequiredService<BSBlazorWebViewDeveloperTools>();
-			_contentRootRelativeToAppRoot = contentRootRelativeToAppRoot;
+        _webview = webview;
+        _urlLoading = urlLoading;
+        _blazorWebViewInitializing = blazorWebViewInitializing;
+        _blazorWebViewInitialized = blazorWebViewInitialized;
+        _developerTools = services.GetRequiredService<BSBlazorWebViewDeveloperTools>();
+        _contentRootRelativeToAppRoot = contentRootRelativeToAppRoot;
 
-			// Unfortunately the CoreWebView2 can only be instantiated asynchronously.
-			// We want the external API to behave as if initalization is synchronous,
-			// so keep track of a task we can await during LoadUri.
-			_webviewReadyTask = TryInitializeWebView2();
-		}
+        // Unfortunately the CoreWebView2 can only be instantiated asynchronously.
+        // We want the external API to behave as if initalization is synchronous,
+        // so keep track of a task we can await during LoadUri.
+        _webviewReadyTask = TryInitializeWebView2();
+    }
 
     /// <inheritdoc />
     protected override void NavigateCore(Uri absoluteUri)
@@ -108,7 +102,7 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
         {
             var isWebviewInitialized = await _webviewReadyTask;
 
-            if(isWebviewInitialized)
+            if (isWebviewInitialized)
             {
                 _webview.Source = absoluteUri;
             }
@@ -121,26 +115,26 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
 
     private async Task<bool> TryInitializeWebView2()
     {
-        var args = new BaksteenBlazorWebViewInitializingEventArgs();
+        var args = new BSBlazorWebViewInitializingEventArgs();
 
-			_blazorWebViewInitializing?.Invoke(args);
-			var userDataFolder = args.UserDataFolder ?? GetWebView2UserDataFolder();
-			_coreWebView2Environment = await CoreWebView2Environment.CreateAsync(
-				browserExecutableFolder: args.BrowserExecutableFolder,
-				userDataFolder: userDataFolder,
-				options: args.EnvironmentOptions)
-				.ConfigureAwait(true);
+        _blazorWebViewInitializing?.Invoke(args);
+        var userDataFolder = args.UserDataFolder ?? GetWebView2UserDataFolder();
+        _coreWebView2Environment = await CoreWebView2Environment.CreateAsync(
+            browserExecutableFolder: args.BrowserExecutableFolder,
+            userDataFolder: userDataFolder,
+            options: args.EnvironmentOptions)
+            .ConfigureAwait(true);
 
-			await _webview.EnsureCoreWebView2Async(_coreWebView2Environment);
+        await _webview.EnsureCoreWebView2Async(_coreWebView2Environment);
 
-			var developerTools = _developerTools;
+        var developerTools = _developerTools;
 
         ApplyDefaultWebViewSettings(developerTools);
 
-			_blazorWebViewInitialized?.Invoke(new BaksteenBlazorWebViewInitializedEventArgs
-			{
-				WebView = _webview,
-			});
+        _blazorWebViewInitialized?.Invoke(new BSBlazorWebViewInitializedEventArgs
+        {
+            WebView = _webview,
+        });
 
         _webview.CoreWebView2.AddWebResourceRequestedFilter($"{AppOrigin}*", CoreWebView2WebResourceContext.All);
 
@@ -186,13 +180,13 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
             eventArgs.ResourceContext == CoreWebView2WebResourceContext.Document ||
             eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
 
-        var requestUri = Baksteen.AspNetCore.Components.WebView.QueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
+        var requestUri = BSQueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
 
-        if(TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
+        if (TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
         {
-            BaksteenStaticContentHotReloadManager.TryReplaceResponseContent(_contentRootRelativeToAppRoot, requestUri, ref statusCode, ref content, headers);
+            BSStaticContentHotReloadManager.TryReplaceResponseContent(_contentRootRelativeToAppRoot, requestUri, ref statusCode, ref content, headers);
 
-            var autoCloseStream = new BaksteenAutoCloseOnReadCompleteStream(content);
+            var autoCloseStream = new BSAutoCloseOnReadCompleteStream(content);
 
             eventArgs.Response = new BSWebResourceResponse
             {
@@ -243,13 +237,13 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
 
     private void CoreWebView2_NavigationStarting(object? sender, BSNavigationStartingEventArgs args)
     {
-        if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
+        if (Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
         {
-				var callbackArgs = BaksteenUrlLoadingEventArgs.CreateWithDefaultLoadingStrategy(uri, AppOriginUri);
+            var callbackArgs = BSUrlLoadingEventArgs.CreateWithDefaultLoadingStrategy(uri, AppOriginUri);
 
-				_urlLoading?.Invoke(callbackArgs);
+            _urlLoading?.Invoke(callbackArgs);
 
-            if(callbackArgs.UrlLoadingStrategy == UrlLoadingStrategy.OpenExternally)
+            if (callbackArgs.UrlLoadingStrategy == UrlLoadingStrategy.OpenExternally)
             {
                 LaunchUriInExternalBrowser(uri);
             }
@@ -262,7 +256,7 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
     {
         // Intercept _blank target <a> tags to always open in device browser.
         // The ExternalLinkCallback is not invoked.
-        if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
+        if (Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
         {
             LaunchUriInExternalBrowser(uri);
             args.Handled = true;
@@ -271,12 +265,12 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
 
     private void LaunchUriInExternalBrowser(Uri uri)
     {
-			using (var launchBrowser = new Process())
-			{
-				launchBrowser.StartInfo.UseShellExecute = true;
-				launchBrowser.StartInfo.FileName = uri.ToString();
-				launchBrowser.Start();
-			}
+        using (var launchBrowser = new Process())
+        {
+            launchBrowser.StartInfo.UseShellExecute = true;
+            launchBrowser.StartInfo.FileName = uri.ToString();
+            launchBrowser.Start();
+        }
     }
 
     private protected static string GetHeaderString(IDictionary<string, string> headers) =>
@@ -293,21 +287,21 @@ internal class WebView2WebViewManagerInterfaced : WebViewManager
         _webview.CoreWebView2.IsStatusBarEnabled = false;
     }
 
-		private static string? GetWebView2UserDataFolder()
-		{
-			if (Assembly.GetEntryAssembly() is { } mainAssembly)
-			{
-				// In case the application is running from a non-writable location (e.g., program files if you're not running
-				// elevated), use our own convention of %LocalAppData%\YourApplicationName.WebView2.
-				// We may be able to remove this if https://github.com/MicrosoftEdge/WebView2Feedback/issues/297 is fixed.
-				var applicationName = mainAssembly.GetName().Name;
-				var result = Path.Combine(
-					Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-					$"{applicationName}.WebView2");
+    private static string? GetWebView2UserDataFolder()
+    {
+        if (Assembly.GetEntryAssembly() is { } mainAssembly)
+        {
+            // In case the application is running from a non-writable location (e.g., program files if you're not running
+            // elevated), use our own convention of %LocalAppData%\YourApplicationName.WebView2.
+            // We may be able to remove this if https://github.com/MicrosoftEdge/WebView2Feedback/issues/297 is fixed.
+            var applicationName = mainAssembly.GetName().Name;
+            var result = Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+                $"{applicationName}.WebView2");
 
-				return result;
-			}
+            return result;
+        }
 
-			return null;
-		}
+        return null;
+    }
 }
