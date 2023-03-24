@@ -17,29 +17,29 @@ using WebKit;
 using TWebView = Tizen.WebView.WebView;
 #endif
 
-namespace Baksteen.Avalonia.Blazor.Contract
+namespace Baksteen.Avalonia.Blazor.Contract;
+
+/// <summary>
+/// Allows configuring the underlying web view when the application is initializing.
+/// </summary>
+public class BSBlazorWebViewInitializingEventArgs : EventArgs
 {
-    /// <summary>
-    /// Allows configuring the underlying web view when the application is initializing.
-    /// </summary>
-    public class BSBlazorWebViewInitializingEventArgs : EventArgs
-    {
 #nullable disable
 #if WINDOWS
-        /// <summary>
-        /// Gets or sets the browser executable folder path for the <see cref="WebView2Control"/>.
-        /// </summary>
-        public string BrowserExecutableFolder { get; set; }
+    /// <summary>
+    /// Gets or sets the browser executable folder path for the <see cref="WebView2Control"/>.
+    /// </summary>
+    public string BrowserExecutableFolder { get; set; }
 
-        /// <summary>
-        /// Gets or sets the user data folder path for the <see cref="WebView2Control"/>.
-        /// </summary>
-        public string UserDataFolder { get; set; }
+    /// <summary>
+    /// Gets or sets the user data folder path for the <see cref="WebView2Control"/>.
+    /// </summary>
+    public string UserDataFolder { get; set; }
 
-        /// <summary>
-        /// Gets or sets the environment options for the <see cref="WebView2Control"/>.
-        /// </summary>
-        public CoreWebView2EnvironmentOptions EnvironmentOptions { get; set; }
+    /// <summary>
+    /// Gets or sets the environment options for the <see cref="WebView2Control"/>.
+    /// </summary>
+    public CoreWebView2EnvironmentOptions EnvironmentOptions { get; set; }
 
 #elif MACCATALYST || IOS
 		/// <summary>
@@ -47,5 +47,4 @@ namespace Baksteen.Avalonia.Blazor.Contract
 		/// </summary>
 		public WKWebViewConfiguration Configuration { get; set; }
 #endif
-    }
 }

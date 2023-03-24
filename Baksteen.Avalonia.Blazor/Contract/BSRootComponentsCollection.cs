@@ -4,14 +4,13 @@
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.ObjectModel;
 
-namespace Baksteen.Avalonia.Blazor.Contract
+namespace Baksteen.Avalonia.Blazor.Contract;
+
+/// <summary>
+/// A collection of <see cref="BSRootComponent"/> items.
+/// </summary>
+public class BSRootComponentsCollection : ObservableCollection<BSRootComponent>, IJSComponentConfiguration
 {
-    /// <summary>
-    /// A collection of <see cref="BSRootComponent"/> items.
-    /// </summary>
-    public class BSRootComponentsCollection : ObservableCollection<BSRootComponent>, IJSComponentConfiguration
-    {
-        /// <inheritdoc />
-        public JSComponentConfigurationStore JSComponents { get; } = new();
-    }
+    /// <inheritdoc />
+    public JSComponentConfigurationStore JSComponents { get; } = new();
 }

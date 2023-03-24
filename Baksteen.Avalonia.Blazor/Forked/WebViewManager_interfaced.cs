@@ -22,29 +22,29 @@ using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Cont
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 
-namespace Baksteen.AspNetCore.Components.WebView.WebView2
+namespace Baksteen.AspNetCore.Components.WebView.WebView2;
+
+/// <summary>
+/// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
+/// to render web content.
+/// </summary>
+internal class WebView2WebViewManagerInterfaced : WebViewManager
 {
+    // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
+    // making it substantially faster. Note that this isn't real HTTP traffic, since
+    // we intercept all the requests within this origin.
+    internal static readonly string AppHostAddress = "0.0.0.0";
+
     /// <summary>
-    /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
-    /// to render web content.
+    /// Gets the application's base URI. Defaults to <c>https://0.0.0.0/</c>
     /// </summary>
-    internal class WebView2WebViewManagerInterfaced : WebViewManager
-    {
-        // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
-        // making it substantially faster. Note that this isn't real HTTP traffic, since
-        // we intercept all the requests within this origin.
-        internal static readonly string AppHostAddress = "0.0.0.0";
+    protected static readonly string AppOrigin = $"https://{AppHostAddress}/";
 
-        /// <summary>
-        /// Gets the application's base URI. Defaults to <c>https://0.0.0.0/</c>
-        /// </summary>
-        protected static readonly string AppOrigin = $"https://{AppHostAddress}/";
+    internal static readonly Uri AppOriginUri = new(AppOrigin);
 
-        internal static readonly Uri AppOriginUri = new(AppOrigin);
-
-        private readonly IBSWebView _webview;
-        private readonly Task<bool> _webviewReadyTask;
-        private readonly string _contentRootRelativeToAppRoot;
+    private readonly IBSWebView _webview;
+    private readonly Task<bool> _webviewReadyTask;
+    private readonly string _contentRootRelativeToAppRoot;
 
 		private protected CoreWebView2Environment? _coreWebView2Environment;
 		private readonly Action<BaksteenUrlLoadingEventArgs> _urlLoading;
@@ -52,20 +52,20 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 		private readonly Action<BaksteenBlazorWebViewInitializedEventArgs> _blazorWebViewInitialized;
 		private readonly BSBlazorWebViewDeveloperTools _developerTools;
 
-        /// <summary>
-        /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
-        /// </summary>
-        /// <param name="webview">A <see cref="IBSWebView"/> to access platform-specific WebView2 APIs.</param>
-        /// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
-        /// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
-        /// <param name="fileProvider">Provides static content to the webview.</param>
-        /// <param name="jsComponents">Describes configuration for adding, removing, and updating root components from JavaScript code.</param>
-        /// <param name="contentRootRelativeToAppRoot">Path to the app's content root relative to the application root directory.</param>
-        /// <param name="hostPagePathWithinFileProvider">Path to the host page within the <paramref name="fileProvider"/>.</param>
-        /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
-        /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
-        /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
-        internal WebView2WebViewManagerInterfaced(
+    /// <summary>
+    /// Constructs an instance of <see cref="Microsoft.AspNetCore.Components.WebView.WebView2.WebView2WebViewManager"/>.
+    /// </summary>
+    /// <param name="webview">A <see cref="IBSWebView"/> to access platform-specific WebView2 APIs.</param>
+    /// <param name="services">A service provider containing services to be used by this class and also by application code.</param>
+    /// <param name="dispatcher">A <see cref="Dispatcher"/> instance that can marshal calls to the required thread or sync context.</param>
+    /// <param name="fileProvider">Provides static content to the webview.</param>
+    /// <param name="jsComponents">Describes configuration for adding, removing, and updating root components from JavaScript code.</param>
+    /// <param name="contentRootRelativeToAppRoot">Path to the app's content root relative to the application root directory.</param>
+    /// <param name="hostPagePathWithinFileProvider">Path to the host page within the <paramref name="fileProvider"/>.</param>
+    /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
+    /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
+    /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
+    internal WebView2WebViewManagerInterfaced(
 			IBSWebView webview,
 			IServiceProvider services,
 			Dispatcher dispatcher,
@@ -101,27 +101,27 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 			_webviewReadyTask = TryInitializeWebView2();
 		}
 
-        /// <inheritdoc />
-        protected override void NavigateCore(Uri absoluteUri)
+    /// <inheritdoc />
+    protected override void NavigateCore(Uri absoluteUri)
+    {
+        _ = Dispatcher.InvokeAsync(async () =>
         {
-            _ = Dispatcher.InvokeAsync(async () =>
+            var isWebviewInitialized = await _webviewReadyTask;
+
+            if(isWebviewInitialized)
             {
-                var isWebviewInitialized = await _webviewReadyTask;
+                _webview.Source = absoluteUri;
+            }
+        });
+    }
 
-                if(isWebviewInitialized)
-                {
-                    _webview.Source = absoluteUri;
-                }
-            });
-        }
+    /// <inheritdoc />
+    protected override void SendMessage(string message)
+        => _webview.CoreWebView2.PostWebMessageAsString(message);
 
-        /// <inheritdoc />
-        protected override void SendMessage(string message)
-            => _webview.CoreWebView2.PostWebMessageAsString(message);
-
-        private async Task<bool> TryInitializeWebView2()
-        {
-            var args = new BaksteenBlazorWebViewInitializingEventArgs();
+    private async Task<bool> TryInitializeWebView2()
+    {
+        var args = new BaksteenBlazorWebViewInitializingEventArgs();
 
 			_blazorWebViewInitializing?.Invoke(args);
 			var userDataFolder = args.UserDataFolder ?? GetWebView2UserDataFolder();
@@ -135,26 +135,26 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
 			var developerTools = _developerTools;
 
-            ApplyDefaultWebViewSettings(developerTools);
+        ApplyDefaultWebViewSettings(developerTools);
 
 			_blazorWebViewInitialized?.Invoke(new BaksteenBlazorWebViewInitializedEventArgs
 			{
 				WebView = _webview,
 			});
 
-            _webview.CoreWebView2.AddWebResourceRequestedFilter($"{AppOrigin}*", CoreWebView2WebResourceContext.All);
+        _webview.CoreWebView2.AddWebResourceRequestedFilter($"{AppOrigin}*", CoreWebView2WebResourceContext.All);
 
-            _webview.CoreWebView2.WebResourceRequested += async (s, eventArgs) =>
-            {
-                await HandleWebResourceRequest(eventArgs);
-            };
+        _webview.CoreWebView2.WebResourceRequested += async (s, eventArgs) =>
+        {
+            await HandleWebResourceRequest(eventArgs);
+        };
 
-            _webview.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-            _webview.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+        _webview.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+        _webview.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
 
-            // The code inside blazor.webview.js is meant to be agnostic to specific webview technologies,
-            // so the following is an adaptor from blazor.webview.js conventions to WebView2 APIs
-            await _webview.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(@"
+        // The code inside blazor.webview.js is meant to be agnostic to specific webview technologies,
+        // so the following is an adaptor from blazor.webview.js conventions to WebView2 APIs
+        await _webview.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(@"
 				window.external = {
 					sendMessage: message => {
 						window.chrome.webview.postMessage(message);
@@ -164,54 +164,54 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 					}
 				};
 			")
-             .ConfigureAwait(true);
+         .ConfigureAwait(true);
 
-            QueueBlazorStart();
+        QueueBlazorStart();
 
-            _webview.CoreWebView2.WebMessageReceived += (s, e) => MessageReceived(e.Uri!, e.WebMessage!);
+        _webview.CoreWebView2.WebMessageReceived += (s, e) => MessageReceived(e.Uri!, e.WebMessage!);
 
-            return true;
-        }
+        return true;
+    }
 
-        /// <summary>
-        /// Handles outbound URL requests.
-        /// </summary>
-        /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
-        protected virtual Task HandleWebResourceRequest(BSWebResourceRequestedEventArgs eventArgs)
+    /// <summary>
+    /// Handles outbound URL requests.
+    /// </summary>
+    /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
+    protected virtual Task HandleWebResourceRequest(BSWebResourceRequestedEventArgs eventArgs)
+    {
+        // Unlike server-side code, we get told exactly why the browser is making the request,
+        // so we can be smarter about fallback. We can ensure that 'fetch' requests never result
+        // in fallback, for example.
+        var allowFallbackOnHostPage =
+            eventArgs.ResourceContext == CoreWebView2WebResourceContext.Document ||
+            eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
+
+        var requestUri = Baksteen.AspNetCore.Components.WebView.QueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
+
+        if(TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
         {
-            // Unlike server-side code, we get told exactly why the browser is making the request,
-            // so we can be smarter about fallback. We can ensure that 'fetch' requests never result
-            // in fallback, for example.
-            var allowFallbackOnHostPage =
-                eventArgs.ResourceContext == CoreWebView2WebResourceContext.Document ||
-                eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
+            BaksteenStaticContentHotReloadManager.TryReplaceResponseContent(_contentRootRelativeToAppRoot, requestUri, ref statusCode, ref content, headers);
 
-            var requestUri = Baksteen.AspNetCore.Components.WebView.QueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
+            var autoCloseStream = new BaksteenAutoCloseOnReadCompleteStream(content);
 
-            if(TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
+            eventArgs.Response = new BSWebResourceResponse
             {
-                BaksteenStaticContentHotReloadManager.TryReplaceResponseContent(_contentRootRelativeToAppRoot, requestUri, ref statusCode, ref content, headers);
-
-                var autoCloseStream = new BaksteenAutoCloseOnReadCompleteStream(content);
-
-                eventArgs.Response = new BSWebResourceResponse
-                {
-                    Content = autoCloseStream,
-                    Headers = new Dictionary<string, string>(headers),  // new Dictionary<string, string>(tmpResponse.Headers),
-                    ReasonPhrase = statusMessage,                       // tmpResponse.ReasonPhrase,
-                    StatusCode = statusCode,                            // tmpResponse.StatusCode,
-                };
-            }
-            return Task.CompletedTask;
+                Content = autoCloseStream,
+                Headers = new Dictionary<string, string>(headers),  // new Dictionary<string, string>(tmpResponse.Headers),
+                ReasonPhrase = statusMessage,                       // tmpResponse.ReasonPhrase,
+                StatusCode = statusCode,                            // tmpResponse.StatusCode,
+            };
         }
+        return Task.CompletedTask;
+    }
 
 #if NEVER
-        /// <summary>
-        /// Handles outbound URL requests.
-        /// </summary>
-        /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
-        protected virtual Task HandleWebResourceRequest(CoreWebView2WebResourceRequestedEventArgs eventArgs)
-        {
+    /// <summary>
+    /// Handles outbound URL requests.
+    /// </summary>
+    /// <param name="eventArgs">The <see cref="CoreWebView2WebResourceRequestedEventArgs"/>.</param>
+    protected virtual Task HandleWebResourceRequest(CoreWebView2WebResourceRequestedEventArgs eventArgs)
+    {
 			// Unlike server-side code, we get told exactly why the browser is making the request,
 			// so we can be smarter about fallback. We can ensure that 'fetch' requests never result
 			// in fallback, for example.
@@ -231,67 +231,67 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
 				eventArgs.Response = _coreWebView2Environment!.CreateWebResourceResponse(autoCloseStream, statusCode, statusMessage, headerString);
 			}
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
 #endif
-        /// <summary>
-        /// Override this method to queue a call to Blazor.start(). Not all platforms require this.
-        /// </summary>
-        protected virtual void QueueBlazorStart()
-        {
-        }
+    /// <summary>
+    /// Override this method to queue a call to Blazor.start(). Not all platforms require this.
+    /// </summary>
+    protected virtual void QueueBlazorStart()
+    {
+    }
 
-        private void CoreWebView2_NavigationStarting(object? sender, BSNavigationStartingEventArgs args)
+    private void CoreWebView2_NavigationStarting(object? sender, BSNavigationStartingEventArgs args)
+    {
+        if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
         {
-            if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
-            {
 				var callbackArgs = BaksteenUrlLoadingEventArgs.CreateWithDefaultLoadingStrategy(uri, AppOriginUri);
 
 				_urlLoading?.Invoke(callbackArgs);
 
-                if(callbackArgs.UrlLoadingStrategy == UrlLoadingStrategy.OpenExternally)
-                {
-                    LaunchUriInExternalBrowser(uri);
-                }
-
-                args.Cancel = callbackArgs.UrlLoadingStrategy != UrlLoadingStrategy.OpenInWebView;
-            }
-        }
-
-        private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
-        {
-            // Intercept _blank target <a> tags to always open in device browser.
-            // The ExternalLinkCallback is not invoked.
-            if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
+            if(callbackArgs.UrlLoadingStrategy == UrlLoadingStrategy.OpenExternally)
             {
                 LaunchUriInExternalBrowser(uri);
-                args.Handled = true;
             }
-        }
 
-        private void LaunchUriInExternalBrowser(Uri uri)
+            args.Cancel = callbackArgs.UrlLoadingStrategy != UrlLoadingStrategy.OpenInWebView;
+        }
+    }
+
+    private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
+    {
+        // Intercept _blank target <a> tags to always open in device browser.
+        // The ExternalLinkCallback is not invoked.
+        if(Uri.TryCreate(args.Uri, UriKind.RelativeOrAbsolute, out var uri))
         {
+            LaunchUriInExternalBrowser(uri);
+            args.Handled = true;
+        }
+    }
+
+    private void LaunchUriInExternalBrowser(Uri uri)
+    {
 			using (var launchBrowser = new Process())
 			{
 				launchBrowser.StartInfo.UseShellExecute = true;
 				launchBrowser.StartInfo.FileName = uri.ToString();
 				launchBrowser.Start();
 			}
-        }
+    }
 
-        private protected static string GetHeaderString(IDictionary<string, string> headers) =>
-            string.Join(Environment.NewLine, headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
+    private protected static string GetHeaderString(IDictionary<string, string> headers) =>
+        string.Join(Environment.NewLine, headers.Select(kvp => $"{kvp.Key}: {kvp.Value}"));
 
-        private void ApplyDefaultWebViewSettings(BSBlazorWebViewDeveloperTools devTools)
-        {
-            _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
+    private void ApplyDefaultWebViewSettings(BSBlazorWebViewDeveloperTools devTools)
+    {
+        _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
 
-            // Desktop applications typically don't want the default web browser context menu
-            _webview.CoreWebView2.AreDefaultContextMenusEnabled = false;
+        // Desktop applications typically don't want the default web browser context menu
+        _webview.CoreWebView2.AreDefaultContextMenusEnabled = false;
 
-            // Desktop applications almost never want to show a URL preview when hovering over a link
-            _webview.CoreWebView2.IsStatusBarEnabled = false;
-        }
+        // Desktop applications almost never want to show a URL preview when hovering over a link
+        _webview.CoreWebView2.IsStatusBarEnabled = false;
+    }
 
 		private static string? GetWebView2UserDataFolder()
 		{
@@ -310,5 +310,4 @@ namespace Baksteen.AspNetCore.Components.WebView.WebView2
 
 			return null;
 		}
-    }
 }
