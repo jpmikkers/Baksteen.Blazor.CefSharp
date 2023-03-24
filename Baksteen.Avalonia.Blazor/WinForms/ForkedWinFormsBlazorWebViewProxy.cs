@@ -1,16 +1,10 @@
-﻿using DynamicData;
+﻿using Baksteen.Avalonia.Blazor.Contract;
+using DynamicData;
 using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Components.WebView;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
-using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor.WinForms;
 
@@ -43,19 +37,19 @@ public class ForkedWinFormsBlazorWebViewProxy : IBSBlazorWebView
 
     public IBSWebView WebView => _webViewProxy;
 
-    public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading
+    public EventHandler<BSUrlLoadingEventArgs>? UrlLoading
     {
         get => _original.UrlLoading;
         set => _original.UrlLoading = value;
     }
 
-    public EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
+    public EventHandler<BSBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
     {
         get => _original.BlazorWebViewInitializing;
         set => _original.BlazorWebViewInitializing = value;
     }
 
-    public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
+    public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
     {
         get => _original.BlazorWebViewInitialized;
         set => _original.BlazorWebViewInitialized = value;

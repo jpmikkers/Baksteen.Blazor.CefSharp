@@ -9,9 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Avalonia.Platform;
 using System.ComponentModel.DataAnnotations;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
 using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor.WinForms;
@@ -45,9 +42,9 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
     public IBSWebView WebView => _webViewProxy;
 
     private EventHandler<UrlLoadingEventArgs>? _urlLoadingOriginal;
-    private EventHandler<BaksteenUrlLoadingEventArgs>? _urlLoading;
+    private EventHandler<BSUrlLoadingEventArgs>? _urlLoading;
 
-    public EventHandler<BaksteenUrlLoadingEventArgs>? UrlLoading
+    public EventHandler<BSUrlLoadingEventArgs>? UrlLoading
     {
         get
         {
@@ -61,7 +58,7 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
                 _urlLoading = value;
                 _urlLoadingOriginal = new EventHandler<UrlLoadingEventArgs>(
                     (sender, args) => _urlLoading(sender,
-                    new BaksteenUrlLoadingEventArgs(args.Url, args.UrlLoadingStrategy)));
+                    new BSUrlLoadingEventArgs(args.Url, args.UrlLoadingStrategy)));
                 _original.UrlLoading = _urlLoadingOriginal;
             }
             else
@@ -74,9 +71,9 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
     }
 
     private EventHandler<BlazorWebViewInitializingEventArgs>? _blazorWebViewInitializingOriginal;
-    private EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? _blazorWebViewInitializing;
+    private EventHandler<BSBlazorWebViewInitializingEventArgs>? _blazorWebViewInitializing;
 
-    public EventHandler<BaksteenBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
+    public EventHandler<BSBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing
     {
         get
         {
@@ -90,7 +87,7 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
                 _blazorWebViewInitializing = value;
                 _blazorWebViewInitializingOriginal = new EventHandler<BlazorWebViewInitializingEventArgs>(
                     (sender, args) => _blazorWebViewInitializing(sender,
-                    new BaksteenBlazorWebViewInitializingEventArgs
+                    new BSBlazorWebViewInitializingEventArgs
                     {
                         BrowserExecutableFolder = args.BrowserExecutableFolder,
                         EnvironmentOptions = args.EnvironmentOptions,
@@ -108,9 +105,9 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
     }
 
     private EventHandler<BlazorWebViewInitializedEventArgs>? _blazorWebViewInitializedOriginal;
-    private EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? _blazorWebViewInitialized;
+    private EventHandler<BSBlazorWebViewInitializedEventArgs>? _blazorWebViewInitialized;
 
-    public EventHandler<BaksteenBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
+    public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized
     {
         get
         {
@@ -123,7 +120,7 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
                 _blazorWebViewInitialized = value;
                 _blazorWebViewInitializedOriginal = new EventHandler<BlazorWebViewInitializedEventArgs>(
                     (sender, args) => _blazorWebViewInitialized(sender,
-                    new BaksteenBlazorWebViewInitializedEventArgs { WebView = new WinFormsWebViewProxy(args.WebView) }));
+                    new BSBlazorWebViewInitializedEventArgs { WebView = new WinFormsWebViewProxy(args.WebView) }));
                 _original.BlazorWebViewInitialized = _blazorWebViewInitializedOriginal;
             }
             else
