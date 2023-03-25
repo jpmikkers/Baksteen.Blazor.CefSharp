@@ -1,5 +1,4 @@
 ﻿using Baksteen.Avalonia.Blazor.Contract;
-using DynamicData;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Web.WebView2.WinForms;
@@ -15,7 +14,7 @@ namespace Baksteen.Avalonia.Blazor.WinForms;
 public class ForkedWinFormsBlazorWebViewProxy : IBSBlazorWebView
 {
     public object PlatformSpecificComponent => _original;
-    private readonly AspNetCore.Components.WebView.WindowsForms.BlazorWebView _original;
+    private readonly BlazorWebView _original;
     private readonly WinFormsWebViewProxy _webViewProxy;
     public ForkedWinFormsBlazorWebViewProxy(WebView2 webView)
     {
@@ -70,7 +69,7 @@ public class ForkedWinFormsBlazorWebViewProxy : IBSBlazorWebView
 
     public void AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
-        _original.RootComponents.AddRange(rootComponents);
+        foreach(var component in rootComponents) { _original.RootComponents.Add(component); }
     }
 
     public JSComponentConfigurationStore JSComponents => _original.RootComponents.JSComponents;

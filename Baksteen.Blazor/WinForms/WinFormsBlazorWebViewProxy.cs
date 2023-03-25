@@ -1,15 +1,11 @@
-﻿using DynamicData;
+﻿using Baksteen.Avalonia.Blazor.Contract;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Avalonia.Platform;
-using System.ComponentModel.DataAnnotations;
-using Baksteen.Avalonia.Blazor.Contract;
 
 namespace Baksteen.Avalonia.Blazor.WinForms;
 
@@ -147,7 +143,10 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
 
     public void AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
-        _original.RootComponents.AddRange(rootComponents.Select(x => new RootComponent(x.Selector, x.ComponentType, x.Parameters)));
+        foreach(var rc in rootComponents.Select(x => new RootComponent(x.Selector, x.ComponentType, x.Parameters)))
+        {
+            _original.RootComponents.Add(rc);
+        }
     }
 
     public JSComponentConfigurationStore JSComponents => _original.RootComponents.JSComponents;

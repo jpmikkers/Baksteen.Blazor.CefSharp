@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+  <Title>Baksteen.Blazor</Title>
+    <Summary>Baksteen BlazorWebView component</Summary>
+    <Description>Baksteen BlazorWebView component</Description>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Baksteen.Blazor</RootNamespace>
+    <PackageId>Baksteen.Blazor</PackageId>
+    <PackageTags>$(PackageTags);blazor</PackageTags>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Parked\WebViewManager_combined.cs" />
+    <Compile Remove="Parked\WebViewManager_maui.cs" />
+    <Compile Remove="Parked\WebViewManager_winforms.cs" />
+    <Compile Remove="Parked\WebViewManager_wpf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Parked\WebViewManager_combined.cs" />
+    <None Include="Parked\WebViewManager_maui.cs" />
+    <None Include="Parked\WebViewManager_winforms.cs" />
+    <None Include="Parked\WebViewManager_wpf.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
+  </ItemGroup>
+</Project>

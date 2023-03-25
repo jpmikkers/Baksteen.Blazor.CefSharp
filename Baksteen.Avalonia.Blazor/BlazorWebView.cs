@@ -170,11 +170,11 @@ public class BlazorWebView : NativeControlHost
             }
 
             // use PureBlazorWebView that operates on a WinForms WebView2
-            //_blazorWebView = new BlazorWebViewPure(new Microsoft.Web.WebView2.WinForms.WebView2())
-            //{
-            //    HostPage = _hostPage,
-            //    Services = _serviceProvider!,
-            //};
+            _blazorWebView = new BlazorWebViewPure(new Microsoft.Web.WebView2.WinForms.WebView2())
+            {
+                HostPage = _hostPage,
+                Services = _serviceProvider!,
+            };
 
             // use Baksteen fork of BlazorWebView that operates on a WinForms WebView2
             //_blazorWebView = new ForkedWinFormsBlazorWebViewProxy(new Microsoft.Web.WebView2.WinForms.WebView2())
@@ -184,11 +184,11 @@ public class BlazorWebView : NativeControlHost
             //};
 
             // use original WinForms BlazorWebView
-            _blazorWebView = new WinFormsBlazorWebViewProxy()
-            {
-                HostPage = _hostPage,
-                Services = _serviceProvider!,
-            };
+            //_blazorWebView = new WinFormsBlazorWebViewProxy()
+            //{
+            //    HostPage = _hostPage,
+            //    Services = _serviceProvider!,
+            //};
 
             _blazorWebView.WebView.ZoomFactor = Math.Clamp(_zoomFactor, 0.1, 4.0);
             //_blazorWebView.RootComponents.AddRange(_rootComponents); // this was used for the original winforms BlazorWebView

@@ -15,6 +15,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -75,7 +76,7 @@ internal class BSWebViewManager : WebViewManager
     {
         ArgumentNullException.ThrowIfNull(webview);
 
-        if (services.GetService<BSAvaloniaBlazorMarkerService>() is null)
+        if(services.GetService<BSAvaloniaBlazorMarkerService>() is null)
         {
             throw new InvalidOperationException(
                 "Unable to find the required services. " +
@@ -102,7 +103,7 @@ internal class BSWebViewManager : WebViewManager
         {
             var isWebviewInitialized = await _webviewReadyTask;
 
-            if (isWebviewInitialized)
+            if(isWebviewInitialized)
             {
                 _webview.Source = absoluteUri;
             }
@@ -111,7 +112,11 @@ internal class BSWebViewManager : WebViewManager
 
     /// <inheritdoc />
     protected override void SendMessage(string message)
-        => _webview.CoreWebView2.PostWebMessageAsString(message);
+    {
+        Trace.WriteLine($"SendMessage(message={message})");
+
+        _webview.CoreWebView2.PostWebMessageAsString(message); 
+    }
 
     private async Task<bool> TryInitializeWebView2()
     {
@@ -162,7 +167,12 @@ internal class BSWebViewManager : WebViewManager
 
         QueueBlazorStart();
 
-        _webview.CoreWebView2.WebMessageReceived += (s, e) => MessageReceived(e.Uri!, e.WebMessage!);
+        _webview.CoreWebView2.WebMessageReceived += (s, e) => {
+
+            Trace.WriteLine($"MessageReceived(uri={e.Uri}, message={e.WebMessage})");
+
+            MessageReceived(e.Uri!, e.WebMessage!); 
+        };
 
         return true;
     }
@@ -181,6 +191,7 @@ internal class BSWebViewManager : WebViewManager
             eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
 
         var requestUri = BSQueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
+        Trace.WriteLine($"HandleWebResourceRequest(uri={eventArgs.Request.Uri})");
 
         if (TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
         {

@@ -14,21 +14,12 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Parked\WebViewManager_combined.cs" />
-    <Compile Remove="Parked\WebViewManager_maui.cs" />
-    <Compile Remove="Parked\WebViewManager_winforms.cs" />
-    <Compile Remove="Parked\WebViewManager_wpf.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Parked\WebViewManager_combined.cs" />
-    <None Include="Parked\WebViewManager_maui.cs" />
-    <None Include="Parked\WebViewManager_winforms.cs" />
-    <None Include="Parked\WebViewManager_wpf.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.0-preview5" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.0-preview5" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Forked\BlazorWebView_Pure.cs" />
