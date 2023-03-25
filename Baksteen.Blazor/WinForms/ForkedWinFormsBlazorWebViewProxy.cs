@@ -1,11 +1,11 @@
-﻿using Baksteen.Avalonia.Blazor.Contract;
+﻿using Baksteen.Blazor.Contract;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Collections.Generic;
 
-namespace Baksteen.Avalonia.Blazor.WinForms;
+namespace Baksteen.Blazor.WinForms;
 
 /// <summary>
 /// Implementation of IBlazorWebView that uses a forked version of the WinForms BlazorWebView, 

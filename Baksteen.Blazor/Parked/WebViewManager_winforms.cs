@@ -1,7 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Baksteen.Avalonia.Blazor;
+using Baksteen.Blazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
@@ -16,7 +16,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using BaksteenAutoCloseOnReadCompleteStream = Baksteen.AspNetCore.Components.WebView.WebView2.AutoCloseOnReadCompleteStream;
-using BaksteenAvaloniaBlazorMarkerService = Baksteen.Avalonia.Blazor.BaksteenAvaloniaBlazorMarkerService;
+using BaksteenAvaloniaBlazorMarkerService = Baksteen.Blazor.BaksteenAvaloniaBlazorMarkerService;
 using BaksteenBlazorWebViewDeveloperTools = Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebViewDeveloperTools;
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializingEventArgs;

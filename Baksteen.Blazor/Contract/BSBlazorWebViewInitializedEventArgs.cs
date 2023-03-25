@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 /// <summary>
 /// Allows configuring the underlying web view after it has been initialized.

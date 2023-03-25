@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenUrlLoadingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSUrlLoadingEventArgs;
-using BaksteenRootComponent = Baksteen.Avalonia.Blazor.Contract.BSRootComponent;
+using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
+using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
+using BaksteenUrlLoadingEventArgs = Baksteen.Blazor.Contract.BSUrlLoadingEventArgs;
+using BaksteenRootComponent = Baksteen.Blazor.Contract.BSRootComponent;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 public interface IBSBlazorWebView : IDisposable
 {

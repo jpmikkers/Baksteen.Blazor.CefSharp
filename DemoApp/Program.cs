@@ -1,13 +1,10 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Dialogs;
 using Avalonia.ReactiveUI;
-using System;
+using Baksteen.Blazor;
+using DemoApp.Data;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using DemoApp.Data;
-using Baksteen.Avalonia.Blazor;
 
 namespace DemoApp;
 

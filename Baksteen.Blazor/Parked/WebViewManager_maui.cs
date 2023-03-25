@@ -28,7 +28,7 @@ using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.AspNetCore.Component
 using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.AspNetCore.Components.WebView.BlazorWebViewInitializedEventArgs;
 using BaksteenUrlLoadingEventArgs = Baksteen.AspNetCore.Components.WebView.UrlLoadingEventArgs;
 using BaksteenBlazorWebViewDeveloperTools = Baksteen.AspNetCore.Components.WebView.WindowsForms.BlazorWebViewDeveloperTools;
-using BaksteenAvaloniaBlazorMarkerService = Baksteen.Avalonia.Blazor.BaksteenAvaloniaBlazorMarkerService;
+using BaksteenAvaloniaBlazorMarkerService = Baksteen.Blazor.BaksteenAvaloniaBlazorMarkerService;
 using BaksteenStaticContentHotReloadManager = Baksteen.AspNetCore.Components.WebView.StaticContentHotReloadManager;
 
 namespace Baksteen.AspNetCore.Components.WebView.WebView2

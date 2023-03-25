@@ -1,4 +1,4 @@
-﻿using Baksteen.Avalonia.Blazor.Contract;
+﻿using Baksteen.Blazor.Contract;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Baksteen.Avalonia.Blazor.WinForms;
+namespace Baksteen.Blazor.WinForms;
 
 /// <summary>
 /// Implementation of IBlazorWebView that uses the regular, unmodified BlazorWebView from Microsoft

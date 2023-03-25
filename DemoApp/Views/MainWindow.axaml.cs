@@ -1,14 +1,8 @@
 using Avalonia.ReactiveUI;
+using Baksteen.Blazor.Contract;
 using DemoApp.ViewModels;
 using ReactiveUI;
 using System.Reactive;
-using System.Threading.Tasks;
-using Avalonia.Platform.Storage;
-using Avalonia.Controls;
-using Microsoft.Extensions.DependencyInjection;
-using DemoApp.Data;
-using Baksteen.Avalonia.Blazor;
-using Baksteen.Avalonia.Blazor.Contract;
 
 namespace DemoApp.Views;
 

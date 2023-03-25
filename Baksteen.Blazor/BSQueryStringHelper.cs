@@ -5,7 +5,7 @@
 
 using System;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Blazor;
 
 internal static class BSQueryStringHelper
 {

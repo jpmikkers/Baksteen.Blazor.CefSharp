@@ -1,15 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Platform;
-using Microsoft.AspNetCore.Components.WebView;
+using Baksteen.Blazor;
+using Baksteen.Blazor.Contract;
+using Baksteen.Blazor.WinForms;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
-using BaksteenBlazorWebViewInitializingEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializingEventArgs;
-using BaksteenBlazorWebViewInitializedEventArgs = Baksteen.Avalonia.Blazor.Contract.BSBlazorWebViewInitializedEventArgs;
-using BaksteenRootComponent = Baksteen.Avalonia.Blazor.Contract.BSRootComponent;
-using Baksteen.Avalonia.Blazor.Contract;
-using Baksteen.Avalonia.Blazor.WinForms;
 
 namespace Baksteen.Avalonia.Blazor;
 
@@ -20,7 +17,7 @@ public class BlazorWebView : NativeControlHost
     private double _zoomFactor = 1.0;
     private string? _hostPage;
     private IServiceProvider _serviceProvider = default!;
-    private List<BaksteenRootComponent> _rootComponents = new();
+    private List<BSRootComponent> _rootComponents = new();
 
     /// <summary>
     /// The <see cref="AvaloniaProperty" /> which backs the <see cref="ZoomFactor" /> property.
@@ -37,8 +34,8 @@ public class BlazorWebView : NativeControlHost
             x => x.Services,
             (x, y) => x.Services = y);
 
-    public static readonly DirectProperty<BlazorWebView, List<BaksteenRootComponent>> RootComponentsProperty
-        = AvaloniaProperty.RegisterDirect<BlazorWebView, List<BaksteenRootComponent>>(
+    public static readonly DirectProperty<BlazorWebView, List<BSRootComponent>> RootComponentsProperty
+        = AvaloniaProperty.RegisterDirect<BlazorWebView, List<BSRootComponent>>(
             nameof(RootComponents),
             x => x.RootComponents,
             (x, y) => x.RootComponents = y);
@@ -143,7 +140,7 @@ public class BlazorWebView : NativeControlHost
         }
     }
 
-    public List<BaksteenRootComponent> RootComponents
+    public List<BSRootComponent> RootComponents
     {
         get
         {
@@ -201,14 +198,14 @@ public class BlazorWebView : NativeControlHost
         return base.CreateNativeControlCore(parent);
     }
 
-    protected void OnBlazorWebViewInitializing(object? sender, BaksteenBlazorWebViewInitializingEventArgs args)
+    protected void OnBlazorWebViewInitializing(object? sender, BSBlazorWebViewInitializingEventArgs args)
     {
         // args.UserDataFolder
         // args.BrowserExecutableFolder
         // args.EnvironmentOptions
     }
 
-    protected void OnBlazorWebViewInitialized(object? sender, BaksteenBlazorWebViewInitializedEventArgs args)
+    protected void OnBlazorWebViewInitialized(object? sender, BSBlazorWebViewInitializedEventArgs args)
     {
     }
 

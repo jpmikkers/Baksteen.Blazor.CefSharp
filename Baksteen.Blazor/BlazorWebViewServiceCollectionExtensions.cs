@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Blazor;
 
 public static class AvaloniaBlazorWebViewServiceCollectionExtensions
 {

@@ -4,7 +4,7 @@
 using Microsoft.AspNetCore.Components.Web;
 using System.Collections.ObjectModel;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 /// <summary>
 /// A collection of <see cref="BSRootComponent"/> items.

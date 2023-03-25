@@ -1,7 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Baksteen.Avalonia.Blazor.Contract;
+using Baksteen.Blazor.Contract;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Specialized;
@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using WebView2Control = Microsoft.Web.WebView2.WinForms.WebView2;
 
-namespace Baksteen.Avalonia.Blazor.WinForms;
+namespace Baksteen.Blazor.WinForms;
 
 /// <summary>
 /// A Windows Forms control for hosting Razor components locally in Windows desktop applications.

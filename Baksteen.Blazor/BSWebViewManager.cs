@@ -1,7 +1,7 @@
 ﻿// Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-using Baksteen.Avalonia.Blazor.Contract;
+using Baksteen.Blazor.Contract;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
@@ -15,9 +15,8 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Blazor;
 
 /// <summary>
 /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control

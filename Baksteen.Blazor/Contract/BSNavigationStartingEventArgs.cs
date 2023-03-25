@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 //
 // Summary:

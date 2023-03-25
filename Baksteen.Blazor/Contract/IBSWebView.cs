@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 public interface IBSWebView
 {

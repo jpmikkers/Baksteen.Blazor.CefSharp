@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Components.WebView;
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 /// <summary>
 /// Used to provide information about a link (<![CDATA[<a>]]>) clicked within a Blazor WebView.

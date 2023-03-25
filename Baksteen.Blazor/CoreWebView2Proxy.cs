@@ -1,6 +1,6 @@
-﻿namespace Baksteen.Avalonia.Blazor;
+﻿namespace Baksteen.Blazor;
 
-using Baksteen.Avalonia.Blazor.Contract;
+using Baksteen.Blazor.Contract;
 using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;

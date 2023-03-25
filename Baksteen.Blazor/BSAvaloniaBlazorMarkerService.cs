@@ -1,4 +1,4 @@
-﻿namespace Baksteen.Avalonia.Blazor;
+﻿namespace Baksteen.Blazor;
 
 /// <summary>
 /// Dummy class that should be registered in DI, allows us to detect that IServiceCollection.AddAvaloniaBlazorWebView() was called during startup

@@ -17,7 +17,7 @@ using WebKit;
 using TWebView = Tizen.WebView.WebView;
 #endif
 
-namespace Baksteen.Avalonia.Blazor.Contract;
+namespace Baksteen.Blazor.Contract;
 
 /// <summary>
 /// Allows configuring the underlying web view when the application is initializing.

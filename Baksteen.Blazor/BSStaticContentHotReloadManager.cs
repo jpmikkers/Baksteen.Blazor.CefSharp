@@ -1,4 +1,4 @@
-﻿using Baksteen.Avalonia.Blazor;
+﻿using Baksteen.Blazor;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.Logging;
@@ -13,7 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 [assembly: MetadataUpdateHandler(typeof(BSStaticContentHotReloadManager))]
-namespace Baksteen.Avalonia.Blazor;
+namespace Baksteen.Blazor;
 
 internal static class BSStaticContentHotReloadManager
 {

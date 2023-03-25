@@ -1,10 +1,10 @@
-﻿using Baksteen.Avalonia.Blazor.Contract;
+﻿using Baksteen.Blazor.Contract;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 using System;
 using System.Threading.Tasks;
 
-namespace Baksteen.Avalonia.Blazor.WinForms;
+namespace Baksteen.Blazor.WinForms;
 
 internal class WinFormsWebViewProxy : IBSWebView
 {
