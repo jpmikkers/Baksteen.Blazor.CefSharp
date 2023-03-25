@@ -154,10 +154,14 @@ internal class BSWebViewManager : WebViewManager
         // so the following is an adaptor from blazor.webview.js conventions to WebView2 APIs
         await _webview.CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(@"
 				window.external = {
+                    // this means: send message from Javascript to C#
 					sendMessage: message => {
+                        // console.log(message);
 						window.chrome.webview.postMessage(message);
 					},
+                    // this means: hook up callback to receive messages from C# to Javascript
 					receiveMessage: callback => {
+                        // console.log(callback);
 						window.chrome.webview.addEventListener('message', e => callback(e.data));
 					}
 				};
@@ -291,7 +295,7 @@ internal class BSWebViewManager : WebViewManager
         _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
 
         // Desktop applications typically don't want the default web browser context menu
-        _webview.CoreWebView2.AreDefaultContextMenusEnabled = false;
+        _webview.CoreWebView2.AreDefaultContextMenusEnabled = true;    // TODO: should be false
 
         // Desktop applications almost never want to show a URL preview when hovering over a link
         _webview.CoreWebView2.IsStatusBarEnabled = false;
