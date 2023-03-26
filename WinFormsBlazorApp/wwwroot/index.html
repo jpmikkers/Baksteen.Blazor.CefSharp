@@ -23,18 +23,9 @@
         <a class="dismiss">🗙</a>
     </div>
 
-    <!--
-        <script src="_framework/blazor.webview.js" autostart="true"></script>
-    -->
-    <script>
-        console.log("before blazor");
-    </script>
-
-    <script type="text/javascript" src="_framework/blazor.webview.js" autostart="false"></script>
-
-    <script>
-        console.log("after blazor");
-    </script>
+    <!-- for the CefSharp based blazor webview, autostart has to be false because the 
+        BlazorWebView has to hook up messaging to- and from javascript before the script can run correctly -->
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
 </body>
 
 </html>
