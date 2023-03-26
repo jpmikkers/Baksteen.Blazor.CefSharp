@@ -22,7 +22,7 @@ namespace Baksteen.Blazor;
 /// An implementation of <see cref="WebViewManager"/> that uses the Edge WebView2 browser control
 /// to render web content.
 /// </summary>
-internal class BSWebViewManager : WebViewManager
+public class BSWebViewManager : WebViewManager
 {
     // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
     // making it substantially faster. Note that this isn't real HTTP traffic, since
@@ -59,7 +59,7 @@ internal class BSWebViewManager : WebViewManager
     /// <param name="urlLoading">Callback invoked when a url is about to load.</param>
     /// <param name="blazorWebViewInitializing">Callback invoked before the webview is initialized.</param>
     /// <param name="blazorWebViewInitialized">Callback invoked after the webview is initialized.</param>
-    internal BSWebViewManager(
+    public BSWebViewManager(
             IBSWebView webview,
             IServiceProvider services,
             Dispatcher dispatcher,

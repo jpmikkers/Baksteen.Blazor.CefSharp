@@ -7,7 +7,7 @@ using System;
 
 namespace Baksteen.Blazor;
 
-internal static class BSQueryStringHelper
+public static class BSQueryStringHelper
 {
     public static string RemovePossibleQueryString(string? url)
     {

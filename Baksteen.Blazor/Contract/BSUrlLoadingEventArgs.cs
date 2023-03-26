@@ -12,7 +12,7 @@ namespace Baksteen.Blazor.Contract;
 /// </summary>
 public class BSUrlLoadingEventArgs : EventArgs
 {
-    internal static BSUrlLoadingEventArgs CreateWithDefaultLoadingStrategy(Uri urlToLoad, Uri appOriginUri)
+    public static BSUrlLoadingEventArgs CreateWithDefaultLoadingStrategy(Uri urlToLoad, Uri appOriginUri)
     {
         var strategy = appOriginUri.IsBaseOf(urlToLoad) ?
             UrlLoadingStrategy.OpenInWebView :

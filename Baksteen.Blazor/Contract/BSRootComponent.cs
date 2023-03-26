@@ -47,13 +47,13 @@ public class BSRootComponent
     /// </summary>
     public IDictionary<string, object?>? Parameters { get; }
 
-    internal Task AddToWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webViewManager)
+    public Task AddToWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webViewManager)
     {
         var parameterView = Parameters == null ? ParameterView.Empty : ParameterView.FromDictionary(Parameters);
         return webViewManager.AddRootComponentAsync(ComponentType, Selector, parameterView);
     }
 
-    internal Task RemoveFromWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webviewManager)
+    public Task RemoveFromWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webviewManager)
     {
         return webviewManager.RemoveRootComponentAsync(Selector);
     }

@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 [assembly: MetadataUpdateHandler(typeof(BSStaticContentHotReloadManager))]
 namespace Baksteen.Blazor;
 
-internal static class BSStaticContentHotReloadManager
+public static class BSStaticContentHotReloadManager
 {
     private delegate void ContentUpdatedHandler(string assemblyName, string relativePath);
 

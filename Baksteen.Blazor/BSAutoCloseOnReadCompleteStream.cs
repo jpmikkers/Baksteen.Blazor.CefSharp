@@ -2,7 +2,7 @@
 
 namespace Baksteen.Blazor;
 
-internal class BSAutoCloseOnReadCompleteStream : Stream
+public class BSAutoCloseOnReadCompleteStream : Stream
 {
     private readonly Stream _baseStream;
 

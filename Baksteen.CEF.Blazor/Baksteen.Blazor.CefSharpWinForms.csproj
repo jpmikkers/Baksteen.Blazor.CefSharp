@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+  <Title>Baksteen.CEF.Blazor</Title>
+    <Summary>CEF BlazorWebView component</Summary>
+    <Description>CEF BlazorWebView component</Description>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>Baksteen.Blazor.CefSharpWinForms</RootNamespace>
+    <PackageId>Baksteen.Blazor.CefSharpWinForms</PackageId>
+    <PackageTags>$(PackageTags);CefSharp;winforms;blazor</PackageTags>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CefSharp.WinForms.NETCore" Version="111.2.20" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Forked\BlazorCefWebView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Update="Forked\BlazorWebView_Pure.cs" />
+  </ItemGroup>
+</Project>

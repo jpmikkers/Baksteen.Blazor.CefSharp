@@ -77,7 +77,7 @@
                 Background="Black">
                 <blazor:BlazorWebView
                     Name="WebView"
-                    HostPage="index.html"
+                    HostPage="wwwroot\index.html"
                     RootComponents="{DynamicResource rootComponents}"
                     Services="{DynamicResource services}"
                     ZoomFactor="{CompiledBinding Zoom}" />
