@@ -128,7 +128,7 @@ internal class CoreWebView2Proxy : IBSCoreWebView
 
     private void ConvertNavigationStarting(object? sender, CoreWebView2NavigationStartingEventArgs e)
     {
-        _onNavigationStarting?.Invoke(this, new BSNavigationStartingEventArgs
+        var args = new BSNavigationStartingEventArgs
         {
             AdditionalAllowedFrameAncestors = e.AdditionalAllowedFrameAncestors,
             Cancel = e.Cancel,
@@ -137,19 +137,51 @@ internal class CoreWebView2Proxy : IBSCoreWebView
             NavigationId = e.NavigationId,
             RequestHeaders = new System.Collections.Generic.Dictionary<string, string>(e.RequestHeaders),
             Uri = e.Uri,
-        });
+        };
+        _onNavigationStarting?.Invoke(this, args);
+        e.Cancel = args.Cancel;
+        e.AdditionalAllowedFrameAncestors = e.AdditionalAllowedFrameAncestors;
     }
 
-    public event EventHandler<CoreWebView2NewWindowRequestedEventArgs> NewWindowRequested
+    private bool _onNewWindowRequestedCoupled = false;
+    private event EventHandler<BSNewWindowRequestedEventArgs>? _onNewWindowRequested;
+
+    public event EventHandler<BSNewWindowRequestedEventArgs> NewWindowRequested
     {
         add
         {
-            _coreWebView2.NewWindowRequested += value;
+            _onNewWindowRequested += value;
+
+            if(!_onNewWindowRequestedCoupled)
+            {
+                _coreWebView2.NewWindowRequested += ConvertNewWindowRequested;
+
+                _onNewWindowRequestedCoupled = true;
+            }
         }
         remove
         {
-            _coreWebView2.NewWindowRequested -= value;
+            _onNewWindowRequested -= value;
+
+            if(_onNewWindowRequested == null && _onNewWindowRequestedCoupled)
+            {
+                _coreWebView2.NewWindowRequested -= ConvertNewWindowRequested;
+                _onNewWindowRequestedCoupled = false;
+            }
         }
+    }
+
+    private void ConvertNewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs e)
+    {
+        var args = new BSNewWindowRequestedEventArgs()
+        {
+            Name = e.Name,
+            Uri = e.Uri,
+            Handled = e.Handled,
+            IsUserInitiated = e.IsUserInitiated,
+        };
+        _onNewWindowRequested?.Invoke(this, args);
+        e.Handled = args.Handled;
     }
 
     public event EventHandler<BSWebMessageReceivedEventArgs>? WebMessageReceived;

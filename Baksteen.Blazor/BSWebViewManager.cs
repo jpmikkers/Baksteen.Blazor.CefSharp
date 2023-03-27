@@ -266,7 +266,7 @@ public class BSWebViewManager : WebViewManager
         }
     }
 
-    private void CoreWebView2_NewWindowRequested(object? sender, CoreWebView2NewWindowRequestedEventArgs args)
+    private void CoreWebView2_NewWindowRequested(object? sender, BSNewWindowRequestedEventArgs args)
     {
         // Intercept _blank target <a> tags to always open in device browser.
         // The ExternalLinkCallback is not invoked.
@@ -295,7 +295,7 @@ public class BSWebViewManager : WebViewManager
         _webview.CoreWebView2.AreDevToolsEnabled = devTools.Enabled;
 
         // Desktop applications typically don't want the default web browser context menu
-        _webview.CoreWebView2.AreDefaultContextMenusEnabled = true;    // TODO: should be false
+        _webview.CoreWebView2.AreDefaultContextMenusEnabled = false;
 
         // Desktop applications almost never want to show a URL preview when hovering over a link
         _webview.CoreWebView2.IsStatusBarEnabled = false;

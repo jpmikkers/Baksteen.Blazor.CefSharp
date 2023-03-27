@@ -49,20 +49,25 @@ public class CefSharpBlazorWebView : ContainerControl
             //IgnoreCertificateErrors = true,
             //RemoteDebuggingPort = 8088,                
             //BrowserSubprocessPath = Path.GetFullPath("WinFormsBlazorApp.exe"),
+            //WindowlessRenderingEnabled = false,
         };
 
         CefSharp.Cef.Initialize(settings);
 
         _webview = new ChromiumWebBrowser();
-        /*
-                    _webview.BrowserSettings = BrowserSettings.Create(true);
-                    _webview.BrowserSettings.Javascript = CefState.Enabled;
-                    _webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
-                    _webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
-        */
+        // Register your Custom LifeSpanHandler
+
+        //_webview.BrowserCore.
+
+        //_webview.BrowserSettings = BrowserSettings.Create(true);
+        //_webview.R
+        //_webview.BrowserSettings.Javascript = CefState.Enabled;
+        //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
+        //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
+
 
         //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
-        _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = false;     // TODO JMIK: not sure what to pick here
+        _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
         _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
 
         _webview.ConsoleMessage += _webview_ConsoleMessage;

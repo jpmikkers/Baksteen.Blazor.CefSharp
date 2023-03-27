@@ -137,7 +137,7 @@ public interface IBSCoreWebView
     //     is not taken on the event args, scripts that resulted in the new window that
     //     are requested are blocked until the event handler returns. If a deferral is taken,
     //     then scripts are blocked until the deferral is completed.
-    event EventHandler<CoreWebView2NewWindowRequestedEventArgs> NewWindowRequested;
+    event EventHandler<BSNewWindowRequestedEventArgs> NewWindowRequested;
 
     //
     // Summary:

@@ -18,6 +18,7 @@ public partial class CefCoreWebView2Adapter
             _parent = parent;
             _cancelingResourceRequestHandler = new();
             _customResourceRequestHandler = new(parent);
+            //this.
         }
 
         private bool MatchesFilter(string url)
@@ -28,6 +29,16 @@ public partial class CefCoreWebView2Adapter
                 if(url.StartsWith(prefix)) return true;
             }
             return false;
+        }
+
+        protected override bool OnOpenUrlFromTab(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, string targetUrl, WindowOpenDisposition targetDisposition, bool userGesture)
+        {
+            return base.OnOpenUrlFromTab(chromiumWebBrowser, browser, frame, targetUrl, targetDisposition, userGesture);
+        }
+
+        protected override bool OnBeforeBrowse(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect)
+        {
+            return base.OnBeforeBrowse(chromiumWebBrowser, browser, frame, request, userGesture, isRedirect);
         }
 
         protected override IResourceRequestHandler GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)

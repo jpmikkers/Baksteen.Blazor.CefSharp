@@ -31,12 +31,20 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
     {
         _webView = chromiumWebBrowser;
         _dispatcher = dispatcher;
+        _webView.LifeSpanHandler = new NewWindowLifeSpanHandler(this);
         _webView.RequestHandler = new CustomRequestHandler(this);
         _webView.ActivateBrowserOnCreation = true;
         _webView.JavascriptMessageReceived += _webView_JavascriptMessageReceived;
         _webView.FrameLoadEnd += _webview_FrameLoadEnd;
+        _webView.AddressChanged += _webView_AddressChanged;
+        //_webView.
         //_chromiumWebBrowser.AddressChanged += _chromiumWebBrowser_AddressChanged;
         //_chromiumWebBrowser.FrameLoadStart += _chromiumWebBrowser_FrameLoadStart;
+    }
+
+    private void _webView_AddressChanged(object? sender, AddressChangedEventArgs e)
+    {
+        //throw new NotImplementedException();
     }
 
     private void _webview_FrameLoadEnd(object? sender, FrameLoadEndEventArgs e)
@@ -102,7 +110,7 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
 
     public event EventHandler<BSWebResourceRequestedEventArgs>? WebResourceRequested;
     public event EventHandler<BSNavigationStartingEventArgs>? NavigationStarting;
-    public event EventHandler<CoreWebView2NewWindowRequestedEventArgs>? NewWindowRequested;     // TODO JMIK : fire this event
+    public event EventHandler<BSNewWindowRequestedEventArgs>? NewWindowRequested;
     public event EventHandler<BSWebMessageReceivedEventArgs>? WebMessageReceived;
 
     public async Task<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)

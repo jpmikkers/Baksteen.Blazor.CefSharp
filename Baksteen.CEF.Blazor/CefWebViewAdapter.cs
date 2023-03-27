@@ -1,14 +1,10 @@
-﻿using Microsoft.Web.WebView2.Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Baksteen.Blazor.Contract;
-using Baksteen.Blazor.WinForms;
-using Microsoft.AspNetCore.Components;
-using CefSharp.WinForms;
+﻿using Baksteen.Blazor.Contract;
 using CefSharp;
+using CefSharp.WinForms;
+using Microsoft.AspNetCore.Components;
+using Microsoft.Web.WebView2.Core;
+using System;
+using System.Threading.Tasks;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
