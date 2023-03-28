@@ -158,11 +158,11 @@ public class BlazorWebView : NativeControlHost
         {
             if(_serviceProvider != null)
             {
-                if(_serviceProvider.GetService<BSAvaloniaBlazorMarkerService>() is null)
+                if(_serviceProvider.GetService<BSBlazorMarkerService>() is null)
                 {
                     throw new InvalidOperationException(
                         "Unable to find the required services. " +
-                        $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(AvaloniaBlazorWebViewServiceCollectionExtensions.AddAvaloniaBlazorWebView)}' in the application startup code.");
+                        $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BSBlazorWebViewServiceCollectionExtensions.AddAvaloniaBlazorWebView)}' in the application startup code.");
                 }
             }
 

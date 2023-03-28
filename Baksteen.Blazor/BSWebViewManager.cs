@@ -75,11 +75,9 @@ public class BSWebViewManager : WebViewManager
     {
         ArgumentNullException.ThrowIfNull(webview);
 
-        if(services.GetService<BSAvaloniaBlazorMarkerService>() is null)
+        if(services.GetService<BSBlazorMarkerService>() is null)
         {
-            throw new InvalidOperationException(
-                "Unable to find the required services. " +
-                $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BlazorWebViewServiceCollectionExtensions.AddWindowsFormsBlazorWebView)}' in the application startup code.");
+            throw new InvalidOperationException("Unable to find the required services.");
         }
 
         _webview = webview;
