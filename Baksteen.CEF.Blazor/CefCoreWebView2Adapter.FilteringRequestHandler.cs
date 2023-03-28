@@ -2,43 +2,40 @@
 using Baksteen.Blazor.Contract;
 using CefSharp;
 using CefSharp.Handler;
+using Microsoft.Web.WebView2.Core;
+using System.Collections.Generic;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
 public partial class CefCoreWebView2Adapter
 {
-    private class CustomRequestHandler : RequestHandler
+    private class FilteringRequestHandler : RequestHandler
     {
         private readonly CefCoreWebView2Adapter _parent;
         private readonly CancelingResourceRequestHandler _cancelingResourceRequestHandler;
-        private readonly CustomResourceRequestHandler _customResourceRequestHandler;
+        private readonly FilteredResourceRequestHandler _filteredResourceRequestHandler;
+        private List<(string url, CoreWebView2WebResourceContext context)> _filters = new();
 
-        public CustomRequestHandler(CefCoreWebView2Adapter parent)
+        public FilteringRequestHandler(CefCoreWebView2Adapter parent)
         {
             _parent = parent;
             _cancelingResourceRequestHandler = new();
-            _customResourceRequestHandler = new(parent);
-            //this.
+            _filteredResourceRequestHandler = new(parent);
+        }
+
+        public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)
+        {
+            _filters.Add((uri, ResourceContext));
         }
 
         private bool MatchesFilter(string url)
         {
-            foreach(var filter in _parent._filters)
+            foreach(var filter in _filters)
             {
                 var prefix = filter.url.Replace("*", "");
                 if(url.StartsWith(prefix)) return true;
             }
             return false;
-        }
-
-        protected override bool OnOpenUrlFromTab(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, string targetUrl, WindowOpenDisposition targetDisposition, bool userGesture)
-        {
-            return base.OnOpenUrlFromTab(chromiumWebBrowser, browser, frame, targetUrl, targetDisposition, userGesture);
-        }
-
-        protected override bool OnBeforeBrowse(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool userGesture, bool isRedirect)
-        {
-            return base.OnBeforeBrowse(chromiumWebBrowser, browser, frame, request, userGesture, isRedirect);
         }
 
         protected override IResourceRequestHandler GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
@@ -63,7 +60,7 @@ public partial class CefCoreWebView2Adapter
             if(MatchesFilter(request.Url))
             {
                 disableDefaultHandling = true;
-                return _customResourceRequestHandler;
+                return _filteredResourceRequestHandler;
             }
 
             //Default behaviour, url will be loaded normally.

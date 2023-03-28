@@ -9,11 +9,11 @@ using System.Diagnostics;
 
 public partial class CefCoreWebView2Adapter
 {
-    private class CustomResourceRequestHandler : ResourceRequestHandler
+    private class FilteredResourceRequestHandler : ResourceRequestHandler
     {
         private readonly CefCoreWebView2Adapter _parent;
 
-        public CustomResourceRequestHandler(CefCoreWebView2Adapter parent)
+        public FilteredResourceRequestHandler(CefCoreWebView2Adapter parent)
         {
             _parent = parent;
         }

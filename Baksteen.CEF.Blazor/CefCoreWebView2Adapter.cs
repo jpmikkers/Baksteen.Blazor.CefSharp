@@ -10,7 +10,6 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Diagnostics.Tracing;
 using System.Text.Encodings.Web;
-using System.Windows.Forms;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Components;
 using CefSharp.WinForms;
@@ -20,7 +19,15 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
 {
     private readonly ChromiumWebBrowser _webView;
     private readonly Dispatcher _dispatcher;
-    private List<(string url, CoreWebView2WebResourceContext context)> _filters = new();
+    private readonly FilteringRequestHandler _filteringRequestHandler;
+    public bool AreDevToolsEnabled { get; set; }
+    public bool AreDefaultContextMenusEnabled { get; set; }
+    public bool IsStatusBarEnabled { get; set; }
+
+    public event EventHandler<BSWebResourceRequestedEventArgs>? WebResourceRequested;
+    public event EventHandler<BSNavigationStartingEventArgs>? NavigationStarting;
+    public event EventHandler<BSNewWindowRequestedEventArgs>? NewWindowRequested;
+    public event EventHandler<BSWebMessageReceivedEventArgs>? WebMessageReceived;
 
     private static Dictionary<string, string> ConvertHeaders(NameValueCollection nvc)
     {
@@ -32,7 +39,8 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
         _webView = chromiumWebBrowser;
         _dispatcher = dispatcher;
         _webView.LifeSpanHandler = new NewWindowLifeSpanHandler(this);
-        _webView.RequestHandler = new CustomRequestHandler(this);
+        _filteringRequestHandler = new FilteringRequestHandler(this);
+        _webView.RequestHandler = _filteringRequestHandler;
         _webView.ActivateBrowserOnCreation = true;
         _webView.JavascriptMessageReceived += _webView_JavascriptMessageReceived;
         _webView.FrameLoadEnd += _webview_FrameLoadEnd;
@@ -104,15 +112,6 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
         });
     }
 
-    public bool AreDevToolsEnabled { get; set; }
-    public bool AreDefaultContextMenusEnabled { get; set; }
-    public bool IsStatusBarEnabled { get; set; }
-
-    public event EventHandler<BSWebResourceRequestedEventArgs>? WebResourceRequested;
-    public event EventHandler<BSNavigationStartingEventArgs>? NavigationStarting;
-    public event EventHandler<BSNewWindowRequestedEventArgs>? NewWindowRequested;
-    public event EventHandler<BSWebMessageReceivedEventArgs>? WebMessageReceived;
-
     public async Task<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
     {
         await Task.CompletedTask;
@@ -121,7 +120,7 @@ public partial class CefCoreWebView2Adapter : IBSCoreWebView
 
     public void AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)
     {
-        _filters.Add((uri,ResourceContext));
+        _filteringRequestHandler.AddWebResourceRequestedFilter(uri, ResourceContext);
     }
 
     public void PostWebMessageAsString(string webMessageAsString)
