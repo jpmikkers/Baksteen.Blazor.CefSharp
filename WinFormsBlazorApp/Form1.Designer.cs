@@ -1,4 +1,4 @@
-﻿namespace WinFormsBlazorApp;
+﻿namespace CefSharpWinFormsBlazorApp;
 
 using Baksteen.Blazor.CefSharpWinForms;
 

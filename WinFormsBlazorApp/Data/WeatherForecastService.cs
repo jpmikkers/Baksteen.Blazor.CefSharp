@@ -1,4 +1,4 @@
-namespace WinFormsBlazorApp.Data;
+namespace CefSharpWinFormsBlazorApp.Data;
 
 using System;
 using System.Linq;

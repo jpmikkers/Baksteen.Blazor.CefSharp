@@ -1,10 +1,10 @@
-namespace WinFormsBlazorApp;
+namespace CefSharpWinFormsBlazorApp;
 
 using Baksteen.Blazor.CefSharpWinForms;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using WinFormsBlazorApp.Data;
+using CefSharpWinFormsBlazorApp.Data;
 
 internal static class Program
 {
