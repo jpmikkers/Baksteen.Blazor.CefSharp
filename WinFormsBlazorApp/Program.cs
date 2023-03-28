@@ -1,16 +1,10 @@
 namespace WinFormsBlazorApp;
 
-using Microsoft.Extensions.Configuration;
+using Baksteen.Blazor.CefSharpWinForms;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection.PortableExecutable;
 using WinFormsBlazorApp.Data;
-using CefSharp.WinForms;
-using CefSharp;
-using Baksteen.Blazor;
-using Baksteen.Blazor.Contract;
-using Baksteen.Blazor.WinForms;
 
 internal static class Program
 {
@@ -22,8 +16,8 @@ internal static class Program
     {
         var appBuilder = Host.CreateApplicationBuilder(args);
         appBuilder.Logging.AddDebug();
-        appBuilder.Services.AddAvaloniaBlazorWebView();                 // this wraps: appBuilder.Services.AddWindowsFormsBlazorWebView();
-        appBuilder.Services.AddAvaloniaBlazorWebViewDeveloperTools();   // this wraps: appBuilder.Services.AddBlazorWebViewDeveloperTools();
+        appBuilder.Services.AddCefSharpBlazorWebView();
+        appBuilder.Services.AddCefSharpBlazorWebViewDeveloperTools();
         appBuilder.Services.AddSingleton<WeatherForecastService>();
         using var myApp = appBuilder.Build();
 

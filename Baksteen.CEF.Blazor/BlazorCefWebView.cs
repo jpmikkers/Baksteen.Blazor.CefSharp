@@ -7,6 +7,7 @@ using CefSharp;
 using CefSharp.WinForms;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.WebView.WindowsForms;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Specialized;
@@ -208,6 +209,16 @@ public class CefSharpBlazorWebView : ContainerControl
         if(!RequiredStartupPropertiesSet || _webviewManager != null)
         {
             return;
+        }
+
+        if(_services != null)
+        {
+            if(_services.GetService<BSCefSharpBlazorMarkerService>() is null)
+            {
+                throw new InvalidOperationException(
+                    "Unable to find the required services. " +
+                    $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BSBlazorWebViewServiceCollectionExtensions.AddCefSharpBlazorWebView)}' in the application startup code.");
+            }
         }
 
         // We assume the host page is always in the root of the content directory, because it's
