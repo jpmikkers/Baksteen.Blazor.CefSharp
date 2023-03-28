@@ -15,7 +15,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="CefSharp.WinForms.NETCore" Version="111.2.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />

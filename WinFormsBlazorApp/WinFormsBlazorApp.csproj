@@ -26,7 +26,6 @@
 
   <ItemGroup>
     <PackageReference Include="CefSharp.WinForms.NETCore" Version="111.2.20" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
   </ItemGroup>
