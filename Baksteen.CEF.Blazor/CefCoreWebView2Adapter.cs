@@ -15,7 +15,7 @@ using Microsoft.AspNetCore.Components;
 using CefSharp.WinForms;
 using CefSharp;
 
-public partial class CefCoreWebView2Adapter : IBSCoreWebView
+internal partial class CefCoreWebView2Adapter : IBSCoreWebView
 {
     private readonly ChromiumWebBrowser _webView;
     private readonly Dispatcher _dispatcher;

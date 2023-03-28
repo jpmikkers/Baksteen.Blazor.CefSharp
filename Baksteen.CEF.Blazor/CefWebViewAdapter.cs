@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
-public class CefWebViewAdapter : IBSWebView
+internal class CefWebViewAdapter : IBSWebView
 {
     private readonly ChromiumWebBrowser _webView;
     private readonly CefCoreWebView2Adapter _coreWebView;

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
-public partial class CefCoreWebView2Adapter
+internal partial class CefCoreWebView2Adapter
 {
     private class FilteringRequestHandler : RequestHandler
     {

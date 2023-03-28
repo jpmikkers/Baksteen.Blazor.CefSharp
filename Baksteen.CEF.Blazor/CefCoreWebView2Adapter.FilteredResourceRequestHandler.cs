@@ -7,7 +7,7 @@ using CefSharp.Handler;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
 
-public partial class CefCoreWebView2Adapter
+internal partial class CefCoreWebView2Adapter
 {
     private class FilteredResourceRequestHandler : ResourceRequestHandler
     {

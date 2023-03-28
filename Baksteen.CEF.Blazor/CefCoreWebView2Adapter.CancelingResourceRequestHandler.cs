@@ -3,7 +3,7 @@ using CefSharp.Handler;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
-public partial class CefCoreWebView2Adapter
+internal partial class CefCoreWebView2Adapter
 {
     public class CancelingResourceRequestHandler : ResourceRequestHandler
     {

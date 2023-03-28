@@ -6,7 +6,7 @@ using CefSharp;
 
 namespace Baksteen.Blazor.CefSharpWinForms;
 
-public partial class CefCoreWebView2Adapter
+internal partial class CefCoreWebView2Adapter
 {
     // thanks to: https://ourcodeworld.com/articles/read/1444/how-to-prevent-target-blank-links-from-opening-in-a-new-window-popups-in-cefsharp
     public class NewWindowLifeSpanHandler : ILifeSpanHandler
