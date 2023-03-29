@@ -19,7 +19,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.59" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />
+    <ProjectReference Include="..\Baksteen.Blazor.WinForms\Baksteen.Blazor.WinForms.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Forked\BlazorWebView_Pure.cs" />

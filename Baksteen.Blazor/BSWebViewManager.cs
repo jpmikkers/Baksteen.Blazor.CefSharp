@@ -255,12 +255,12 @@ public class BSWebViewManager : WebViewManager
 
             _urlLoading?.Invoke(callbackArgs);
 
-            if (callbackArgs.UrlLoadingStrategy == UrlLoadingStrategy.OpenExternally)
+            if (callbackArgs.UrlLoadingStrategy == BSUrlLoadingStrategy.OpenExternally)
             {
                 LaunchUriInExternalBrowser(uri);
             }
 
-            args.Cancel = callbackArgs.UrlLoadingStrategy != UrlLoadingStrategy.OpenInWebView;
+            args.Cancel = callbackArgs.UrlLoadingStrategy != BSUrlLoadingStrategy.OpenInWebView;
         }
     }
 

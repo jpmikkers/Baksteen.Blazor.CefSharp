@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
+using Baksteen.Avalonia.Blazor;
 using Baksteen.Blazor;
 using DemoApp.Data;
 using Microsoft.Extensions.DependencyInjection;
@@ -18,8 +19,8 @@ internal class Program
     {
         var appBuilder = Host.CreateApplicationBuilder(args);
         appBuilder.Logging.AddDebug();
-        appBuilder.Services.AddAvaloniaBlazorWebView();                 // this wraps: appBuilder.Services.AddWindowsFormsBlazorWebView();
-        appBuilder.Services.AddAvaloniaBlazorWebViewDeveloperTools();   // this wraps: appBuilder.Services.AddBlazorWebViewDeveloperTools();
+        appBuilder.Services.AddBSAvaloniaBlazorWebView();                 // this wraps: appBuilder.Services.AddWindowsFormsBlazorWebView();
+        appBuilder.Services.AddBSAvaloniaBlazorWebViewDeveloperTools();   // this wraps: appBuilder.Services.AddBlazorWebViewDeveloperTools();
         appBuilder.Services.AddSingleton<WeatherForecastService>();
         using var myApp = appBuilder.Build();
 

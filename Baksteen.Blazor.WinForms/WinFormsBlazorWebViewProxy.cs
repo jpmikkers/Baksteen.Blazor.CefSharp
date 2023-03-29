@@ -40,6 +40,35 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
     private EventHandler<UrlLoadingEventArgs>? _urlLoadingOriginal;
     private EventHandler<BSUrlLoadingEventArgs>? _urlLoading;
 
+
+    private static BSUrlLoadingStrategy FromNativeUrlLoadingStrategy(UrlLoadingStrategy urlLoadingStrategy)
+    {
+        switch(urlLoadingStrategy)
+        {
+            case UrlLoadingStrategy.OpenExternally:
+                return BSUrlLoadingStrategy.OpenExternally;
+            case UrlLoadingStrategy.OpenInWebView:
+                return BSUrlLoadingStrategy.OpenInWebView;
+            default:
+            case UrlLoadingStrategy.CancelLoad:
+                return BSUrlLoadingStrategy.CancelLoad;
+        }
+    }
+
+    private static UrlLoadingStrategy ToNativeUrlLoadingStrategy(BSUrlLoadingStrategy urlLoadingStrategy)
+    {
+        switch(urlLoadingStrategy)
+        {
+            case BSUrlLoadingStrategy.OpenExternally:
+                return UrlLoadingStrategy.OpenExternally;
+            case BSUrlLoadingStrategy.OpenInWebView:
+                return UrlLoadingStrategy.OpenInWebView;
+            default:
+            case BSUrlLoadingStrategy.CancelLoad:
+                return UrlLoadingStrategy.CancelLoad;
+        }
+    }
+
     public EventHandler<BSUrlLoadingEventArgs>? UrlLoading
     {
         get
@@ -53,8 +82,12 @@ public class WinFormsBlazorWebViewProxy : IBSBlazorWebView
             {
                 _urlLoading = value;
                 _urlLoadingOriginal = new EventHandler<UrlLoadingEventArgs>(
-                    (sender, args) => _urlLoading(sender,
-                    new BSUrlLoadingEventArgs(args.Url, args.UrlLoadingStrategy)));
+                    (sender, args) =>
+                    {
+                        var bsArgs = new BSUrlLoadingEventArgs(args.Url, FromNativeUrlLoadingStrategy(args.UrlLoadingStrategy));
+                        _urlLoading(sender, bsArgs);
+                        args.UrlLoadingStrategy = ToNativeUrlLoadingStrategy(bsArgs.UrlLoadingStrategy);
+                    });
                 _original.UrlLoading = _urlLoadingOriginal;
             }
             else

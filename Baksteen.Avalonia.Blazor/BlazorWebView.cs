@@ -162,7 +162,7 @@ public class BlazorWebView : NativeControlHost
                 {
                     throw new InvalidOperationException(
                         "Unable to find the required services. " +
-                        $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BSBlazorWebViewServiceCollectionExtensions.AddAvaloniaBlazorWebView)}' in the application startup code.");
+                        $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BSBlazorWebViewServiceCollectionExtensions.AddBSAvaloniaBlazorWebView)}' in the application startup code.");
                 }
             }
 

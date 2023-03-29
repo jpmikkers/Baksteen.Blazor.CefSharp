@@ -1,5 +1,4 @@
 ﻿using System;
-using Microsoft.AspNetCore.Components.WebView;
 
 namespace Baksteen.Blazor.Contract;
 
@@ -15,13 +14,13 @@ public class BSUrlLoadingEventArgs : EventArgs
     public static BSUrlLoadingEventArgs CreateWithDefaultLoadingStrategy(Uri urlToLoad, Uri appOriginUri)
     {
         var strategy = appOriginUri.IsBaseOf(urlToLoad) ?
-            UrlLoadingStrategy.OpenInWebView :
-            UrlLoadingStrategy.OpenExternally;
+            BSUrlLoadingStrategy.OpenInWebView :
+            BSUrlLoadingStrategy.OpenExternally;
 
         return new(urlToLoad, strategy);
     }
 
-    public BSUrlLoadingEventArgs(Uri url, UrlLoadingStrategy urlLoadingStrategy)
+    public BSUrlLoadingEventArgs(Uri url, BSUrlLoadingStrategy urlLoadingStrategy)
     {
         Url = url;
         UrlLoadingStrategy = urlLoadingStrategy;
@@ -41,5 +40,5 @@ public class BSUrlLoadingEventArgs : EventArgs
     /// unless you can ensure they are fully trusted.
     /// </para>
     /// </summary>
-    public UrlLoadingStrategy UrlLoadingStrategy { get; set; }
+    public BSUrlLoadingStrategy UrlLoadingStrategy { get; set; }
 }

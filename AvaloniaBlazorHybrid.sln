@@ -13,6 +13,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CefSharpWinFormsBlazorApp",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baksteen.Blazor.CefSharpWinForms", "Baksteen.CEF.Blazor\Baksteen.Blazor.CefSharpWinForms.csproj", "{08A11731-67A3-4CF7-A56A-ED39642613A2}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Baksteen.Blazor.WinForms", "Baksteen.Blazor.WinForms\Baksteen.Blazor.WinForms.csproj", "{059EFB5B-B674-4BD1-8D35-55137C67064A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -105,6 +107,22 @@ Global
 		{08A11731-67A3-4CF7-A56A-ED39642613A2}.Release|x64.Build.0 = Release|Any CPU
 		{08A11731-67A3-4CF7-A56A-ED39642613A2}.Release|x86.ActiveCfg = Release|Any CPU
 		{08A11731-67A3-4CF7-A56A-ED39642613A2}.Release|x86.Build.0 = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|arm64.ActiveCfg = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|arm64.Build.0 = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|x64.Build.0 = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Debug|x86.Build.0 = Debug|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|arm64.ActiveCfg = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|arm64.Build.0 = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|x64.ActiveCfg = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|x64.Build.0 = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|x86.ActiveCfg = Release|Any CPU
+		{059EFB5B-B674-4BD1-8D35-55137C67064A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

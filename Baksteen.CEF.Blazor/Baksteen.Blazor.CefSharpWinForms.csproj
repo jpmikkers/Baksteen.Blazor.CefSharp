@@ -9,6 +9,7 @@
     <PackageId>Baksteen.Blazor.CefSharpWinForms</PackageId>
     <PackageTags>$(PackageTags);CefSharp;winforms;blazor</PackageTags>
     <Nullable>enable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

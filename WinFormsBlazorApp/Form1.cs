@@ -1,5 +1,4 @@
 namespace CefSharpWinFormsBlazorApp;
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
 using Microsoft.Extensions.DependencyInjection;
 using Baksteen.Blazor;
 using Baksteen.Blazor.Contract;
