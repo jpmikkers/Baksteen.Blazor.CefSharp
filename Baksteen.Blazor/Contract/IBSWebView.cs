@@ -6,9 +6,17 @@ namespace Baksteen.Blazor.Contract;
 
 public interface IBSWebView
 {
+    bool CanGoBack { get; }
+    bool CanGoForward { get; }
+
     Uri Source { get; set; }
     double ZoomFactor { get; set; }
     IBSCoreWebView CoreWebView2 { get; }
+
+    void Reload();
+    void GoBack();
+    void GoForward();
+    void Stop();
 
     //
     // Summary:
@@ -65,8 +73,6 @@ public interface IBSWebView
     /*
         bool AllowDrop { get; }
         bool AllowExternalDrop { get; set; }
-        bool CanGoBack { get; }
-        bool CanGoForward { get; }
         ContextMenuStrip ContextMenuStrip { get; }
         CoreWebView2 CoreWebView2 { get; }
         CoreWebView2CreationProperties CreationProperties { get; set; }
@@ -85,10 +91,6 @@ public interface IBSWebView
         Task EnsureCoreWebView2Async(CoreWebView2Environment environment = null, CoreWebView2ControllerOptions controllerOptions = null);
         Task EnsureCoreWebView2Async(CoreWebView2Environment environment);
         Task<string> ExecuteScriptAsync(string script);
-        void GoBack();
-        void GoForward();
         void NavigateToString(string htmlContent);
-        void Reload();
-        void Stop();
     */
 }

@@ -22,8 +22,32 @@ internal class WinFormsWebViewProxy : IBSWebView
 
     public IBSCoreWebView CoreWebView2 { get => _coreWebView2Proxy.Value; }
 
+    public bool CanGoBack => _webView.CanGoBack;
+
+    public bool CanGoForward => _webView.CanGoForward;
+
     public Task EnsureCoreWebView2Async(CoreWebView2Environment environment)
     {
         return _webView.EnsureCoreWebView2Async(environment, null);
+    }
+
+    public void Reload()
+    {
+        _webView.Reload();
+    }
+
+    public void GoBack()
+    {
+        _webView.GoBack();
+    }
+
+    public void GoForward()
+    {
+        _webView.GoForward();
+    }
+
+    public void Stop()
+    {
+        _webView.Stop();
     }
 }

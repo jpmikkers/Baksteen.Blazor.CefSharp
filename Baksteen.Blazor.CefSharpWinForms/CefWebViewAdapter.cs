@@ -33,8 +33,32 @@ internal class CefWebViewAdapter : IBSWebView
 
     public IBSCoreWebView CoreWebView2 => _coreWebView;
 
+    public bool CanGoBack => _webView.CanGoBack;
+
+    public bool CanGoForward => _webView.CanGoForward;
+
     public Task EnsureCoreWebView2Async(CoreWebView2Environment environment)
     {
         return Task.CompletedTask;
+    }
+
+    public void GoBack()
+    {
+        _webView.Back();
+    }
+
+    public void GoForward()
+    {
+        _webView.Forward();
+    }
+
+    public void Reload()
+    {
+        _webView.Reload();
+    }
+
+    public void Stop()
+    {
+        _webView.Stop();
     }
 }

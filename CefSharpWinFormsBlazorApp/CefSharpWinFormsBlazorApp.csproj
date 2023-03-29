@@ -31,8 +31,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Baksteen.Blazor.CefSharpWinForms\Baksteen.Blazor.CefSharpWinForms.csproj" />
     <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />
-    <ProjectReference Include="..\Baksteen.CEF.Blazor\Baksteen.Blazor.CefSharpWinForms.csproj" />
   </ItemGroup>
 
 	<ItemGroup>
