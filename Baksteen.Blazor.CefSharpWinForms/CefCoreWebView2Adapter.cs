@@ -71,6 +71,8 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
                     },
                     // this means: hook up callback to receive messages from C# to Javascript
 					receiveMessage: callback => {
+                        // the 'e' argument in the listener is a CustomEvent() containing the message in its detail property.
+                        // that CustomEvent() instance is created and dispatched in the PostWebMessageAsString() c# method 
                         window.__CSToJSMessageEventTarget.addEventListener('message', e => callback(e.detail));
                     }
                 };
