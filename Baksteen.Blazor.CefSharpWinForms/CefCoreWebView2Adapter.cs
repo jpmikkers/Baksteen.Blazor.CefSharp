@@ -62,7 +62,7 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
 
             _ = e.Frame.EvaluateScriptAsync(@"
 
-        		window.__receiveMessageCallbacks = new EventTarget();
+        		window.__CSToJSMessageEventTarget = new EventTarget();
 
                 window.external = {
                     // this means: send message from Javascript to C#
@@ -71,7 +71,7 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
                     },
                     // this means: hook up callback to receive messages from C# to Javascript
 					receiveMessage: callback => {
-                        window.__receiveMessageCallbacks.addEventListener('message', e => callback(e.detail));
+                        window.__CSToJSMessageEventTarget.addEventListener('message', e => callback(e.detail));
                     }
                 };
         
@@ -117,7 +117,7 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
     public void PostWebMessageAsString(string webMessageAsString)
     {
         var messageJSStringLiteral = JavaScriptEncoder.Default.Encode(webMessageAsString);
-        _webView.EvaluateScriptAsync($"__receiveMessageCallbacks.dispatchEvent(new CustomEvent('message', {{ detail : \"{messageJSStringLiteral}\" }}))");
+        _webView.EvaluateScriptAsync($"__CSToJSMessageEventTarget.dispatchEvent(new CustomEvent('message', {{ detail : \"{messageJSStringLiteral}\" }}))");
     }
 
     public Uri Source
