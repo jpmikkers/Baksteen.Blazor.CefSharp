@@ -1,19 +1,17 @@
 ﻿namespace Baksteen.Blazor.CefSharpWinForms;
 
+using Baksteen.Blazor.Contract;
+using CefSharp;
+using CefSharp.WinForms;
+using Microsoft.AspNetCore.Components;
 using Microsoft.Web.WebView2.Core;
 using System;
-using System.Threading.Tasks;
-using Baksteen.Blazor.Contract;
 using System.Collections.Generic;
-using System.Linq;
 using System.Collections.Specialized;
-using System.IO;
-using System.Diagnostics.Tracing;
-using System.Text.Encodings.Web;
 using System.Diagnostics;
-using Microsoft.AspNetCore.Components;
-using CefSharp.WinForms;
-using CefSharp;
+using System.Linq;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 
 internal partial class CefCoreWebView2Adapter : IBSCoreWebView
 {
@@ -64,23 +62,16 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
 
             _ = e.Frame.EvaluateScriptAsync(@"
 
-        		window.__receiveMessageCallbacks = [];
-			    window.__dispatchMessageCallback = function(message) {
-				    window.__receiveMessageCallbacks.forEach(function(callback) { callback(message); });
-			    };
+        		window.__receiveMessageCallbacks = new EventTarget();
 
                 window.external = {
                     // this means: send message from Javascript to C#
                     sendMessage: message => {
-                        // console.log(message);
                         CefSharp.PostMessage(message);
-                        // window.chrome.webview.postMessage(message);
                     },
                     // this means: hook up callback to receive messages from C# to Javascript
 					receiveMessage: callback => {
-                        // console.log('hooked up callback');
-    					window.__receiveMessageCallbacks.push(callback);
-                        // window.chrome.webview.addEventListener('message', e => callback(e.data));
+                        window.__receiveMessageCallbacks.addEventListener('message', e => callback(e.detail));
                     }
                 };
         
@@ -126,7 +117,7 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
     public void PostWebMessageAsString(string webMessageAsString)
     {
         var messageJSStringLiteral = JavaScriptEncoder.Default.Encode(webMessageAsString);
-        _webView.EvaluateScriptAsync($"__dispatchMessageCallback(\"{messageJSStringLiteral}\")");
+        _webView.EvaluateScriptAsync($"__receiveMessageCallbacks.dispatchEvent(new CustomEvent('message', {{ detail : \"{messageJSStringLiteral}\" }}))");
     }
 
     public Uri Source
