@@ -45,7 +45,7 @@ public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
     /// </summary>
     public CefSharpBlazorWebView()
     {
-        ComponentsDispatcher = new BSWindowsFormsDispatcher(this);
+        ComponentsDispatcher = new BSWPFDispatcher(this);
         RootComponents = new BSRootComponentsCollection();
         Unloaded += CefSharpBlazorWebView_Unloaded;
         Loaded += CefSharpBlazorWebView_Loaded;

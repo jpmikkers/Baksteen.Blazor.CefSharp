@@ -12,18 +12,18 @@ namespace Baksteen.Blazor.CefSharpWPF;
 /// class uses the async <see cref="Task"/> pattern so everything must be mapped from the <see cref="IAsyncResult"/>
 /// pattern using techniques listed in https://docs.microsoft.com/dotnet/standard/asynchronous-programming-patterns/interop-with-other-asynchronous-patterns-and-types.
 /// </summary>
-public class BSWindowsFormsDispatcher : Dispatcher
+public class BSWPFDispatcher : Dispatcher
 {
     private static Action<Exception> RethrowException = exception => ExceptionDispatchInfo.Capture(exception).Throw();
     private readonly System.Windows.Threading.Dispatcher _dispatcher;
 
     /// <summary>
-    /// Creates a new instance of <see cref="BSWindowsFormsDispatcher"/>.
+    /// Creates a new instance of <see cref="BSWPFDispatcher"/>.
     /// </summary>
     /// <param name="dispatchThreadControl">A control that was created on the thread from which UI dispatches must
     /// occur. This can typically be any control because all controls must have been created on the UI thread to
     /// begin with.</param>
-    public BSWindowsFormsDispatcher(UIElement dispatchThreadControl)
+    public BSWPFDispatcher(UIElement dispatchThreadControl)
     {
         if (dispatchThreadControl is null)
         {
