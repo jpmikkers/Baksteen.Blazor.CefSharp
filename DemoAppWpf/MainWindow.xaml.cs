@@ -15,16 +15,13 @@ namespace DemoAppWpf
         {
             DataContext = this;
             Services = (Application.Current as App)!.Services!;
-            InitializeComponent();
+            //InitializeComponent();
             RootComponents.Add<BlazorLayout>("#app");
-
 
             //RootComponents =
             //[
             //new BSRootComponent("#app", typeof(BlazorLayout), null)
             //];
-
-
         }
     }
 }

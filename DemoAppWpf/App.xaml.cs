@@ -11,14 +11,9 @@ namespace DemoAppWpf
     {
         public IServiceProvider Services { get; private set; }
 
-        public App() : base()
+        public App(IServiceProvider services) : base()
         {
-            var services = new ServiceCollection();
-            services.AddCefSharpBlazorWebView();
-            services.AddCefSharpBlazorWebViewDeveloperTools();
-            services.AddSingleton<WeatherForecastService>();
-
-            Services = services.BuildServiceProvider();
+            Services = services;
 
             //add an global exception handlers
             AppDomain.CurrentDomain.UnhandledException += (sender, eventArgs) =>
