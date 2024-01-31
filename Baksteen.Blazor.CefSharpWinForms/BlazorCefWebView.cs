@@ -3,9 +3,11 @@ using Baksteen.Blazor.WinForms;
 using CefSharp;
 using CefSharp.WinForms;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -20,7 +22,7 @@ namespace Baksteen.Blazor.CefSharpWinForms;
 /// <summary>
 /// A Windows Forms control for hosting Razor components locally in Windows desktop applications.
 /// </summary>
-public class CefSharpBlazorWebView : ContainerControl
+public class CefSharpBlazorWebView : ContainerControl, IBSBlazorWebView
 {
     private readonly ChromiumWebBrowser _webview;
     private readonly IBSWebView _webViewProxy;
@@ -49,7 +51,7 @@ public class CefSharpBlazorWebView : ContainerControl
             //WindowlessRenderingEnabled = false,
         };
 
-        CefSharp.Cef.Initialize(settings);
+        Cef.Initialize(settings);
 
         _webview = new ChromiumWebBrowser();
         // Register your Custom LifeSpanHandler
@@ -192,24 +194,32 @@ public class CefSharpBlazorWebView : ContainerControl
         HostPage != null &&
         Services != null;
 
+    object IBSBlazorWebView.PlatformSpecificComponent => _webview;
+
+    JSComponentConfigurationStore IBSBlazorWebView.JSComponents => RootComponents.JSComponents;
+
+    EventHandler<BSUrlLoadingEventArgs>? IBSBlazorWebView.UrlLoading { get; set; }
+    EventHandler<BSBlazorWebViewInitializingEventArgs>? IBSBlazorWebView.BlazorWebViewInitializing { get; set; }
+    EventHandler<BSBlazorWebViewInitializedEventArgs>? IBSBlazorWebView.BlazorWebViewInitialized { get; set; }
+
     private void StartWebViewCoreIfPossible()
     {
         // We never start the Blazor code in design time because it doesn't make sense to run
         // a Razor component in the designer.
-        if(IsAncestorSiteInDesignMode)
+        if (IsAncestorSiteInDesignMode)
         {
             return;
         }
 
         // If we don't have all the required properties, or if there's already a WebViewManager, do nothing
-        if(!RequiredStartupPropertiesSet || _webviewManager != null)
+        if (!RequiredStartupPropertiesSet || _webviewManager != null)
         {
             return;
         }
 
-        if(_services != null)
+        if (_services != null)
         {
-            if(_services.GetService<BSCefSharpBlazorMarkerService>() is null)
+            if (_services.GetService<BSCefSharpBlazorMarkerService>() is null)
             {
                 throw new InvalidOperationException(
                     "Unable to find the required services. " +
@@ -221,7 +231,7 @@ public class CefSharpBlazorWebView : ContainerControl
         // unclear there's any other use case. We can add more options later if so.
         string appRootDir;
         var entryAssemblyLocation = Assembly.GetEntryAssembly()?.Location;
-        if(!string.IsNullOrEmpty(entryAssemblyLocation))
+        if (!string.IsNullOrEmpty(entryAssemblyLocation))
         {
             appRootDir = Path.GetDirectoryName(entryAssemblyLocation)!;
         }
@@ -251,7 +261,7 @@ public class CefSharpBlazorWebView : ContainerControl
 
         BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
 
-        foreach(var rootComponent in RootComponents)
+        foreach (var rootComponent in RootComponents)
         {
             // Since the page isn't loaded yet, this will always complete synchronously
             _ = rootComponent.AddToWebViewManagerAsync(_webviewManager);
@@ -262,7 +272,7 @@ public class CefSharpBlazorWebView : ContainerControl
     private void HandleRootComponentsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs eventArgs)
     {
         // If we haven't initialized yet, this is a no-op
-        if(_webviewManager != null)
+        if (_webviewManager != null)
         {
             // Dispatch because this is going to be async, and we want to catch any errors
             _ = ComponentsDispatcher.InvokeAsync(async () =>
@@ -270,12 +280,12 @@ public class CefSharpBlazorWebView : ContainerControl
                 var newItems = (eventArgs.NewItems ?? Array.Empty<object>()).Cast<BSRootComponent>();
                 var oldItems = (eventArgs.OldItems ?? Array.Empty<object>()).Cast<BSRootComponent>();
 
-                foreach(var item in newItems.Except(oldItems))
+                foreach (var item in newItems.Except(oldItems))
                 {
                     await item.AddToWebViewManagerAsync(_webviewManager);
                 }
 
-                foreach(var item in oldItems.Except(newItems))
+                foreach (var item in oldItems.Except(newItems))
                 {
                     await item.RemoveFromWebViewManagerAsync(_webviewManager);
                 }
@@ -293,7 +303,7 @@ public class CefSharpBlazorWebView : ContainerControl
     /// <returns>Returns a <see cref="IFileProvider"/> for static assets.</returns>
     public virtual IFileProvider CreateFileProvider(string contentRootDir)
     {
-        if(Directory.Exists(contentRootDir))
+        if (Directory.Exists(contentRootDir))
         {
             // Typical case after publishing, or if you're copying content to the bin dir in development for some nonstandard reason
             return new PhysicalFileProvider(contentRootDir);
@@ -309,7 +319,7 @@ public class CefSharpBlazorWebView : ContainerControl
     /// <inheritdoc cref="Control.Dispose(bool)" />
     protected override void Dispose(bool disposing)
     {
-        if(disposing)
+        if (disposing)
         {
             // Dispose this component's contents and block on completion so that user-written disposal logic and
             // Razor component disposal logic will complete first. Then call base.Dispose(), which will dispose
@@ -322,5 +332,11 @@ public class CefSharpBlazorWebView : ContainerControl
                 .GetResult();
         }
         base.Dispose(disposing);
+    }
+
+    void IBSBlazorWebView.AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
+    {
+        foreach (var component in rootComponents)
+            RootComponents.Add(component);
     }
 }

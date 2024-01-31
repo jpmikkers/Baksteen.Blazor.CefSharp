@@ -3,7 +3,7 @@
   <Title>Baksteen.Blazor</Title>
     <Summary>Baksteen BlazorWebView component</Summary>
     <Description>Baksteen BlazorWebView component</Description>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Baksteen.Blazor</RootNamespace>
     <PackageId>Baksteen.Blazor</PackageId>

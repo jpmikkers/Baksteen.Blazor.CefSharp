@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "DemoAppWpf": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:62973;http://localhost:62974"
+    }
+  }
+}

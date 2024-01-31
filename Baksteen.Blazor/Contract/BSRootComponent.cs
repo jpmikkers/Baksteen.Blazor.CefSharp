@@ -31,21 +31,23 @@ public class BSRootComponent
         Parameters = parameters;
     }
 
-    /// <summary>
-    /// Gets the CSS selector string that specifies where in the document the component should be placed.
-    /// This must be unique among the root components within the <see cref="BlazorWebView"/>.
-    /// </summary>
-    public string Selector { get; }
+    public BSRootComponent() { }
 
     /// <summary>
-    /// Gets the type of the root component. This type must implement <see cref="IComponent"/>.
+    /// Gets or sets the CSS selector string that specifies where in the document the component should be placed.
+    /// This must be unique among the root components within the <see cref="BlazorWebView"/>.
     /// </summary>
-    public Type ComponentType { get; }
+    public string Selector { get; set; } = default!;
+
+    /// <summary>
+    /// Gets or sets the type of the root component. This type must implement <see cref="IComponent"/>.
+    /// </summary>
+    public Type ComponentType { get; set; } = default!;
 
     /// <summary>
     /// Gets an optional dictionary of parameters to pass to the root component.
     /// </summary>
-    public IDictionary<string, object?>? Parameters { get; }
+    public IDictionary<string, object?>? Parameters { get; set; }
 
     public Task AddToWebViewManagerAsync(Microsoft.AspNetCore.Components.WebView.WebViewManager webViewManager)
     {

@@ -1,0 +1,27 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net7.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="BlazorCefWebView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+  </ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="CefSharp.Wpf.NETCore" Version="120.2.70" />
+		<PackageReference Include="chromiumembeddedframework.runtime" Version="120.2.7" />
+		<PackageReference Include="chromiumembeddedframework.runtime.win-x64" Version="120.2.7" />
+		<PackageReference Include="chromiumembeddedframework.runtime.win-x86" Version="120.2.7" />
+	</ItemGroup>
+
+</Project>

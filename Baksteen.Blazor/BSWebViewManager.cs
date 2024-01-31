@@ -75,7 +75,7 @@ public class BSWebViewManager : WebViewManager
     {
         ArgumentNullException.ThrowIfNull(webview);
 
-        if(services.GetService<BSBlazorMarkerService>() is null)
+        if (services.GetService<BSBlazorMarkerService>() is null)
         {
             throw new InvalidOperationException("Unable to find the required services.");
         }
@@ -99,8 +99,7 @@ public class BSWebViewManager : WebViewManager
         _ = Dispatcher.InvokeAsync(async () =>
         {
             var isWebviewInitialized = await _webviewReadyTask;
-
-            if(isWebviewInitialized)
+            if (isWebviewInitialized)
             {
                 _webview.Source = absoluteUri;
             }
@@ -112,7 +111,7 @@ public class BSWebViewManager : WebViewManager
     {
         Trace.WriteLine($"SendMessage(message={message})");
 
-        _webview.CoreWebView2.PostWebMessageAsString(message); 
+        _webview.CoreWebView2.PostWebMessageAsString(message);
     }
 
     private async Task<bool> TryInitializeWebView2()
@@ -168,11 +167,12 @@ public class BSWebViewManager : WebViewManager
 
         QueueBlazorStart();
 
-        _webview.CoreWebView2.WebMessageReceived += (s, e) => {
+        _webview.CoreWebView2.WebMessageReceived += (s, e) =>
+        {
 
             Trace.WriteLine($"MessageReceived(uri={e.Uri}, message={e.WebMessage})");
 
-            MessageReceived(e.Uri!, e.WebMessage!); 
+            MessageReceived(e.Uri!, e.WebMessage!);
         };
 
         return true;
