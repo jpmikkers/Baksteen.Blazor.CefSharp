@@ -33,7 +33,7 @@ public class BSWindowsFormsDispatcher : Dispatcher
         _dispatcher = dispatchThreadControl.Dispatcher;
     }
 
-    public override bool CheckAccess() => false;
+    public override bool CheckAccess() => _dispatcher.Thread == Thread.CurrentThread;
 
     public override async Task InvokeAsync(Action workItem)
     {
