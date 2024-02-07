@@ -82,7 +82,7 @@ public class CefSharpBlazorWebView : ContainerControl, IBSBlazorWebView
 
     private void _webview_IsBrowserInitializedChanged(object? sender, EventArgs e)
     {
-        Trace.WriteLine("_webview_IsBrowserInitializedChanged");
+        Debug.WriteLine("_webview_IsBrowserInitializedChanged");
         // TODO JMIK: debugging doesnt work
         //if(_webview.IsBrowserInitialized)
         //{
@@ -97,7 +97,7 @@ public class CefSharpBlazorWebView : ContainerControl, IBSBlazorWebView
 
     private void _webview_ConsoleMessage(object? sender, ConsoleMessageEventArgs e)
     {
-        Trace.WriteLine($"webview_consolemessage({e.Level} {e.Message})");
+        Debug.WriteLine($"webview_consolemessage({e.Level} {e.Message})");
     }
 
     /// <summary>

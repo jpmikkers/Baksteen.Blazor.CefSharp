@@ -58,7 +58,7 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
         //Wait for the MainFrame to finish loading
         if(e.Frame.IsMain)
         {
-            Trace.WriteLine("main frame finished loading");
+            Debug.WriteLine("main frame finished loading");
 
             _ = e.Frame.EvaluateScriptAsync(@"
 

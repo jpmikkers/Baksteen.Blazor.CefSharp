@@ -36,7 +36,7 @@ internal partial class CefCoreWebView2Adapter
             var requestUri = BSQueryStringHelper.RemovePossibleQueryString(request.Url);
             var mimeType = ResourceHandler.DefaultMimeType;
 
-            Trace.WriteLine($"requestUri here is {requestUri}");
+            Debug.WriteLine($"requestUri here is {requestUri}");
 
             if (requestUri.EndsWith(".html"))
             {

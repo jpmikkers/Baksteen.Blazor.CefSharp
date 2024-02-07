@@ -109,7 +109,7 @@ public class BSWebViewManager : WebViewManager
     /// <inheritdoc />
     protected override void SendMessage(string message)
     {
-        Trace.WriteLine($"SendMessage(message={message})");
+        Debug.WriteLine($"SendMessage(message={message})");
 
         _webview.CoreWebView2.PostWebMessageAsString(message);
     }
@@ -170,7 +170,7 @@ public class BSWebViewManager : WebViewManager
         _webview.CoreWebView2.WebMessageReceived += (s, e) =>
         {
 
-            Trace.WriteLine($"MessageReceived(uri={e.Uri}, message={e.WebMessage})");
+            Debug.WriteLine($"MessageReceived(uri={e.Uri}, message={e.WebMessage})");
 
             MessageReceived(e.Uri!, e.WebMessage!);
         };
@@ -192,7 +192,7 @@ public class BSWebViewManager : WebViewManager
             eventArgs.ResourceContext == CoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
 
         var requestUri = BSQueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
-        Trace.WriteLine($"HandleWebResourceRequest(uri={eventArgs.Request.Uri})");
+        Debug.WriteLine($"HandleWebResourceRequest(uri={eventArgs.Request.Uri})");
 
         if (TryGetResponseContent(requestUri, allowFallbackOnHostPage, out var statusCode, out var statusMessage, out var content, out var headers))
         {
