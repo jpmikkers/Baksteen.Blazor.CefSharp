@@ -67,9 +67,13 @@ public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
             }
         };
 
-        Cef.Initialize(settings, performDependencyCheck: false, browserProcessHandler: null);
+        if(!DesignerProperties.GetIsInDesignMode(this))
+        {
+            Cef.Initialize(settings);
+        }
 
         _webview = new ChromiumWebBrowser();
+
         // Register your Custom LifeSpanHandler
 
         //_webview.BrowserCore.
@@ -80,16 +84,17 @@ public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
         //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
 
+        if(_webview.IsBrowserInitialized)
+        { 
+            //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
+            _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
+            _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
 
-        //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
-        _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
-        _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
+            _webview.ConsoleMessage += _webview_ConsoleMessage;
+            _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
+            _webview.LoadError += _webview_LoadError;
+        }
 
-        _webview.ConsoleMessage += _webview_ConsoleMessage;
-        _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
-        // _webview.LoadError += _webview_LoadError;
-
-        //_webview.Dock = DockStyle.Fill;
         _webViewProxy = new CefWebViewAdapter(_webview, ComponentsDispatcher);
         Children.Add(_webview);
     }
@@ -116,7 +121,7 @@ public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
 
     private void _webview_IsBrowserInitializedChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
     {
-        //Trace.WriteLine("_webview_IsBrowserInitializedChanged");
+        //Debug.WriteLine("_webview_IsBrowserInitializedChanged");
         // TODO JMIK: debugging doesnt work
         //if(_webview.IsBrowserInitialized)
         //{
@@ -131,7 +136,12 @@ public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
 
     private void _webview_ConsoleMessage(object? sender, ConsoleMessageEventArgs e)
     {
-        Trace.WriteLine($"webview_consolemessage({e.Level} {e.Message})");
+        Debug.WriteLine($"webview_ConsoleMessage({e.Level} {e.Message})");
+    }
+
+    private void _webview_LoadError(object? sender, LoadErrorEventArgs e)
+    {
+        Debug.WriteLine($"webview_LoadError(ErrorCode='{e.ErrorCode}' ErrorText='{e.ErrorText}' FailedUrl='{e.FailedUrl}')");
     }
 
     /// <summary>

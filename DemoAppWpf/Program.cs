@@ -11,7 +11,6 @@ using Microsoft.Extensions.Logging;
 using Baksteen.Blazor.CefSharpWPF;
 using CefSharp.BrowserSubprocess;
 using DemoAppWpf.Data;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoAppWpf
 {
