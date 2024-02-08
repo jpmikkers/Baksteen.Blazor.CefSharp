@@ -4,14 +4,18 @@
 	  <OutputType>WinExe</OutputType>
 	  <TargetFramework>net8.0-windows</TargetFramework>
 	  <Nullable>enable</Nullable>
-	  <!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
-	  <TrimMode>copyused</TrimMode>
 	  <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
 	  <RootNamespace>DemoAppWpf</RootNamespace>
 	  <ImplicitUsings>enable</ImplicitUsings>	  
       <UseWPF>True</UseWPF>
-	  <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
-	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+	  <Platforms>x86;x64;arm64</Platforms>
+	  <PlatformTarget>x86</PlatformTarget>
+	  <PlatformTarget Condition="'$(Platform)' == 'x86'">x86</PlatformTarget>
+	  <PlatformTarget Condition="'$(Platform)' == 'x64'">x64</PlatformTarget>
+	  <PlatformTarget Condition="'$(Platform)' == 'arm64'">arm64</PlatformTarget>
+	  <RuntimeIdentifier Condition="'$(Platform)' == 'x86'">win-x86</RuntimeIdentifier>
+	  <RuntimeIdentifier Condition="'$(Platform)' == 'x64'">win-x64</RuntimeIdentifier>
+	  <RuntimeIdentifier Condition="'$(Platform)' == 'arm64'">win-arm64</RuntimeIdentifier>
 	  <SelfContained Condition="'$(Configuration)' == 'Debug'">false</SelfContained>
   </PropertyGroup>
 
