@@ -9,15 +9,6 @@
 	<ApplicationManifest>app.manifest</ApplicationManifest>
 
 	  <Platforms>x86;x64;arm64</Platforms>
-	  <!-- Explicitly set the PlatformTarget for arm64, see: https://github.com/dotnet/sdk/issues/15434 -->
-	  <!-- <PlatformTarget>x64</PlatformTarget> -->
-	  <PlatformTarget Condition="'$(Platform)' == 'x86'">x86</PlatformTarget>
-	  <PlatformTarget Condition="'$(Platform)' == 'x64'">x64</PlatformTarget>
-	  <PlatformTarget Condition="'$(Platform)' == 'arm64'">arm64</PlatformTarget>
-	  <!--
-        Run on a newer version of .Net if the specified version (.Net Core 3.1) is not installed
-        https://github.com/dotnet/docs/issues/12237
-        -->
 	  <RollForward>Major</RollForward>
 	  <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
 	  <RuntimeIdentifier Condition="'$(Platform)' == 'x86'">win-x86</RuntimeIdentifier>
