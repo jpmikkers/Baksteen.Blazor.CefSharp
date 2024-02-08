@@ -33,7 +33,7 @@ public class BSWPFDispatcher : Dispatcher
         _dispatcher = dispatchThreadControl.Dispatcher;
     }
 
-    public override bool CheckAccess() => _dispatcher.CheckAccess();
+    public override bool CheckAccess() => _dispatcher.Thread == Thread.CurrentThread;
 
     public override async Task InvokeAsync(Action workItem)
     {
@@ -114,7 +114,8 @@ public class BSWPFDispatcher : Dispatcher
             }
             else
             {
-                return await _dispatcher.InvokeAsync(workItem).Task.Unwrap();
+                var t = await _dispatcher.InvokeAsync(workItem);
+                return await t;
             }
         }
         catch (Exception ex)

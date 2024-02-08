@@ -1,4 +1,4 @@
-using Baksteen.Blazor.Contract;
+﻿using Baksteen.Blazor.Contract;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.AspNetCore.Components;
@@ -19,7 +19,7 @@ namespace Baksteen.Blazor.CefSharpWPF;
 /// <summary>
 /// A Windows Forms control for hosting Razor components locally in Windows desktop applications.
 /// </summary>
-public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDisposable
+public class CefSharpBlazorWebView : Grid, IBSBlazorWebView
 {
     public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(nameof(Services), typeof(IServiceProvider), typeof(CefSharpBlazorWebView), new PropertyMetadata(default(IServiceProvider)));
     public static readonly DependencyProperty RootComponentsProperty = DependencyProperty.Register(nameof(RootComponents), typeof(BSRootComponentsCollection), typeof(CefSharpBlazorWebView), new PropertyMetadata(default(BSRootComponentsCollection), (sender, eventArgs) =>
@@ -39,7 +39,6 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     private readonly IBSWebView _webViewProxy;
     private BSWebViewManager? _webviewManager;
     private string? _hostPage;
-    private bool _isDisposed;
 
     /// <summary>
     /// Creates a new instance of <see cref="BlazorWebView"/>.
@@ -49,6 +48,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         ComponentsDispatcher = new BSWPFDispatcher(this);
         RootComponents = new BSRootComponentsCollection();
         Unloaded += CefSharpBlazorWebView_Unloaded;
+        Loaded += CefSharpBlazorWebView_Loaded;
 
         var settings = new CefSettings()
         {
@@ -67,12 +67,13 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
             }
         };
 
-        if (!DesignerProperties.GetIsInDesignMode(this))
+        if(!DesignerProperties.GetIsInDesignMode(this))
         {
             Cef.Initialize(settings);
         }
 
         _webview = new ChromiumWebBrowser();
+
         // Register your Custom LifeSpanHandler
 
         //_webview.BrowserCore.
@@ -83,70 +84,44 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
 
+        if(_webview.IsBrowserInitialized)
+        { 
+            //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
+            _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
+            _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
 
-        //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
-        _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
-        _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
+            _webview.ConsoleMessage += _webview_ConsoleMessage;
+            _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
+            _webview.LoadError += _webview_LoadError;
+        }
 
-        _webview.ConsoleMessage += _webview_ConsoleMessage;
-        _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
-        _webview.LoadError += _webview_LoadError;
-
-        //_webview.Dock = DockStyle.Fill;
         _webViewProxy = new CefWebViewAdapter(_webview, ComponentsDispatcher);
-        AddChild(_webview);
+        Children.Add(_webview);
     }
 
     private void CefSharpBlazorWebView_Loaded(object sender, RoutedEventArgs e) => StartWebViewCoreIfPossible();
 
-    private void CheckDisposed()
-    {
-        if (_isDisposed)
-        {
-            throw new ObjectDisposedException(GetType().Name);
-        }
-    }
-
-    protected virtual async ValueTask DisposeAsyncCore()
+    public void Dispose()
     {
         _webview.IsBrowserInitializedChanged -= _webview_IsBrowserInitializedChanged;
         _webview.ConsoleMessage -= _webview_ConsoleMessage;
 
-        // Dispose this component's contents that user-written disposal logic and Razor component disposal logic will
-        // complete first. Then dispose the WebView2 control. This order is critical because once the WebView2 is
-        // disposed it will prevent and Razor component code from working because it requires the WebView to exist.
-        if (_webviewManager != null)
-        {
-            await _webviewManager.DisposeAsync()
-                .ConfigureAwait(false);
-            _webviewManager = null;
-        }
-
-        _webview.Dispose();
+        // Dispose this component's contents and block on completion so that user-written disposal logic and
+        // Razor component disposal logic will complete first. Then call base.Dispose(), which will dispose
+        // the WebView2 control. This order is critical because once the WebView2 is disposed it will prevent
+        // Razor component code from working because it requires the WebView to exist.
+        _webviewManager?
+            .DisposeAsync()
+            .AsTask()
+            .GetAwaiter()
+            .GetResult();
     }
-
-    /// <inheritdoc />
-    public async ValueTask DisposeAsync()
-    {
-        if (_isDisposed)
-            return;
-
-        _isDisposed = true;
-
-        // Perform async cleanup.
-        await DisposeAsyncCore();
-
-        // Suppress finalization.
-        GC.SuppressFinalize(this);
-    }
-
-    public void Dispose() => _ = DisposeAsync();
 
     private void CefSharpBlazorWebView_Unloaded(object sender, System.Windows.RoutedEventArgs e) => Dispose();
 
     private void _webview_IsBrowserInitializedChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
     {
-        //Trace.WriteLine("_webview_IsBrowserInitializedChanged");
+        //Debug.WriteLine("_webview_IsBrowserInitializedChanged");
         // TODO JMIK: debugging doesnt work
         //if(_webview.IsBrowserInitialized)
         //{
@@ -161,8 +136,9 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
 
     private void _webview_ConsoleMessage(object? sender, ConsoleMessageEventArgs e)
     {
-        Debug.WriteLine($"webview_consolemessage({e.Level} {e.Message})");
+        Debug.WriteLine($"webview_ConsoleMessage({e.Level} {e.Message})");
     }
+
     private void _webview_LoadError(object? sender, LoadErrorEventArgs e)
     {
         Debug.WriteLine($"webview_LoadError(ErrorCode='{e.ErrorCode}' ErrorText='{e.ErrorText}' FailedUrl='{e.FailedUrl}')");
@@ -245,6 +221,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized;
 
     private bool RequiredStartupPropertiesSet =>
+        IsLoaded &&
         _webview != null &&
         HostPage != null &&
         Services != null;
@@ -256,21 +233,6 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     EventHandler<BSUrlLoadingEventArgs>? IBSBlazorWebView.UrlLoading { get; set; }
     EventHandler<BSBlazorWebViewInitializingEventArgs>? IBSBlazorWebView.BlazorWebViewInitializing { get; set; }
     EventHandler<BSBlazorWebViewInitializedEventArgs>? IBSBlazorWebView.BlazorWebViewInitialized { get; set; }
-
-    protected override void OnInitialized(EventArgs e)
-    {
-        // Called when BeginInit/EndInit are used, such as when creating the control from XAML
-        base.OnInitialized(e);
-        StartWebViewCoreIfPossible();
-    }
-
-    public override void OnApplyTemplate()
-    {
-        // Called when the control is created after its child control (the WebView2) is created from the Template property
-        base.OnApplyTemplate();
-        if (_webviewManager == null)
-            StartWebViewCoreIfPossible();
-    }
 
     private void StartWebViewCoreIfPossible()
     {
