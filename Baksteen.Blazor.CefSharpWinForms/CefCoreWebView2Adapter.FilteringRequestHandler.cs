@@ -14,7 +14,7 @@ internal partial class CefCoreWebView2Adapter
         private readonly CefCoreWebView2Adapter _parent;
         private readonly CancelingResourceRequestHandler _cancelingResourceRequestHandler;
         private readonly FilteredResourceRequestHandler _filteredResourceRequestHandler;
-        private List<(string url, CoreWebView2WebResourceContext context)> _filters = new();
+        private readonly List<(string url, CoreWebView2WebResourceContext context)> _filters = new();
 
         public FilteringRequestHandler(CefCoreWebView2Adapter parent)
         {
@@ -30,17 +30,18 @@ internal partial class CefCoreWebView2Adapter
 
         private bool MatchesFilter(string url)
         {
-            foreach(var filter in _filters)
+            foreach (var filter in _filters)
             {
                 var prefix = filter.url.Replace("*", "");
-                if(url.StartsWith(prefix)) return true;
+                if (url.StartsWith(prefix)) return true;
             }
             return false;
         }
 
-        protected override IResourceRequestHandler GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
+        protected override IResourceRequestHandler? GetResourceRequestHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request, bool isNavigation, bool isDownload, string requestInitiator, ref bool disableDefaultHandling)
         {
-            var navigationStartingEventArgs = new BSNavigationStartingEventArgs {
+            var navigationStartingEventArgs = new BSNavigationStartingEventArgs
+            {
                 Uri = request.Url,
                 Cancel = false,
                 IsRedirected = false,
@@ -49,22 +50,22 @@ internal partial class CefCoreWebView2Adapter
                 RequestHeaders = ConvertHeaders(request.Headers)
             };
 
-            _parent.NavigationStarting?.Invoke(_parent, navigationStartingEventArgs);
-
-            if(navigationStartingEventArgs.Cancel)
+            if (isNavigation)
             {
-                return _cancelingResourceRequestHandler;
+                _parent.NavigationStarting?.Invoke(_parent, navigationStartingEventArgs);
+                if (navigationStartingEventArgs.Cancel)
+                    return _cancelingResourceRequestHandler;
             }
 
             //Only intercept specific Url's
-            if(MatchesFilter(request.Url))
+            if (MatchesFilter(request.Url))
             {
                 disableDefaultHandling = true;
                 return _filteredResourceRequestHandler;
             }
 
             //Default behaviour, url will be loaded normally.
-            return null!;
+            return null;
         }
     }
 }
