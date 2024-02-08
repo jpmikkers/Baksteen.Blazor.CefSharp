@@ -11,9 +11,9 @@ public class BSNewWindowRequestedEventArgs : EventArgs
     //
     // Summary:
     //     Gets the target uri of the new window request.
-    public string Uri
+    public required string Uri
     {
-        get; set;
+        get; init;
     }
 
     //
@@ -82,8 +82,8 @@ public class BSNewWindowRequestedEventArgs : EventArgs
     //     then the Name property will be set accordingly. In the case of target=_blank,
     //     the Name property will be an empty string. Opening a window via Ctrl+clicking
     //     a link would result in the Name property being set to an empty string.
-    public string Name
+    public required string Name
     {
-        get; set;
+        get; init;
     }
 }
