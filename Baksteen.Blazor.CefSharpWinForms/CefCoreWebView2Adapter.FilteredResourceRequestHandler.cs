@@ -27,7 +27,11 @@ internal partial class CefCoreWebView2Adapter
             {
                 ResourceType.Xhr => CoreWebView2WebResourceContext.Fetch,
                 ResourceType.FontResource => CoreWebView2WebResourceContext.Font,
-                _ => Enum.TryParse<CoreWebView2WebResourceContext>(request.ResourceType.ToString(), out var type) ? type : CoreWebView2WebResourceContext.Document
+                ResourceType.Script => CoreWebView2WebResourceContext.Script,
+                ResourceType.Image => CoreWebView2WebResourceContext.Image,
+                ResourceType.Stylesheet => CoreWebView2WebResourceContext.Stylesheet,
+                ResourceType.Media => CoreWebView2WebResourceContext.Media,
+                _ => CoreWebView2WebResourceContext.Document
             };
 
             var webResourceRequestedEventArgs = new BSWebResourceRequestedEventArgs
