@@ -6,6 +6,7 @@ using CefSharp;
 using CefSharp.Handler;
 using Microsoft.Web.WebView2.Core;
 using System.Diagnostics;
+using System.IO;
 
 internal partial class CefCoreWebView2Adapter
 {
@@ -20,6 +21,13 @@ internal partial class CefCoreWebView2Adapter
 
         protected override IResourceHandler GetResourceHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request)
         {
+            var resourceType = request.ResourceType switch
+            {
+                ResourceType.Xhr => CoreWebView2WebResourceContext.Fetch,
+                ResourceType.FontResource => CoreWebView2WebResourceContext.Font,
+                _ => Enum.TryParse<CoreWebView2WebResourceContext>(request.ResourceType.ToString(), out var type) ? type : CoreWebView2WebResourceContext.Document
+            };
+
             var webResourceRequestedEventArgs = new BSWebResourceRequestedEventArgs
             {
                 Request = new BSWebResourceRequest
@@ -29,37 +37,22 @@ internal partial class CefCoreWebView2Adapter
                     Headers = ConvertHeaders(request.Headers),
                     Method = request.Method,
                 },
-                ResourceContext = CoreWebView2WebResourceContext.Document,
+                ResourceContext = resourceType,
                 Response = null!
             };
 
             var requestUri = BSQueryStringHelper.RemovePossibleQueryString(request.Url);
-            var mimeType = ResourceHandler.DefaultMimeType;
 
             Debug.WriteLine($"requestUri here is {requestUri}");
 
-            if (requestUri.EndsWith(".html"))
+            var extension = Path.GetExtension(requestUri.Split('/').Last()).Trim('.');
+            var mimeType = extension switch
             {
-                mimeType = Cef.GetMimeType("html");
-            }
-
-            if (requestUri.EndsWith(".css"))
-            {
-                mimeType = Cef.GetMimeType("css");
-                webResourceRequestedEventArgs.ResourceContext = CoreWebView2WebResourceContext.Stylesheet;
-            }
-
-            if (requestUri.EndsWith(".js"))
-            {
-                mimeType = Cef.GetMimeType("js");
-                webResourceRequestedEventArgs.ResourceContext = CoreWebView2WebResourceContext.Script;
-            }
-
-            if (requestUri.EndsWith(".json"))
-            {
-                mimeType = Cef.GetMimeType("json");
-                webResourceRequestedEventArgs.ResourceContext = CoreWebView2WebResourceContext.Fetch;
-            }
+                "" => ResourceHandler.DefaultMimeType,
+                "htm" => ResourceHandler.DefaultMimeType,
+                "html" => ResourceHandler.DefaultMimeType,
+                _ => Cef.GetMimeType(extension)
+            };
 
             _parent.WebResourceRequested?.Invoke(_parent, webResourceRequestedEventArgs);
 
