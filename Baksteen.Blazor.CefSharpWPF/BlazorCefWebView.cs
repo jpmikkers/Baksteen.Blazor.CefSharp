@@ -83,7 +83,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
 
-        if(_webview.IsBrowserInitialized)
+        if (_webview.IsBrowserInitialized)
         {
             //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
             _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
@@ -112,6 +112,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     {
         _webview.IsBrowserInitializedChanged -= _webview_IsBrowserInitializedChanged;
         _webview.ConsoleMessage -= _webview_ConsoleMessage;
+        _webview.LoadError -= _webview_LoadError;
 
         // Dispose this component's contents that user-written disposal logic and Razor component disposal logic will
         // complete first. Then dispose the WebView2 control. This order is critical because once the WebView2 is
