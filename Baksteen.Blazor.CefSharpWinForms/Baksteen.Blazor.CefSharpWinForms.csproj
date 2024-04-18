@@ -15,10 +15,10 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-	  <PackageReference Include="CefSharp.Winforms.NETCore" Version="120.2.70" />
-	  <PackageReference Include="chromiumembeddedframework.runtime" Version="120.2.7" />
-	  <PackageReference Include="chromiumembeddedframework.runtime.win-x64" Version="120.2.7" />
-	  <PackageReference Include="chromiumembeddedframework.runtime.win-x86" Version="120.2.7" />
+	  <PackageReference Include="CefSharp.Winforms.NETCore" Version="123.0.60" />
+	  <PackageReference Include="chromiumembeddedframework.runtime" Version="123.0.6" />
+	  <PackageReference Include="chromiumembeddedframework.runtime.win-x64" Version="123.0.6" />
+	  <PackageReference Include="chromiumembeddedframework.runtime.win-x86" Version="123.0.6" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Baksteen.Blazor\Baksteen.Blazor.csproj" />

@@ -26,7 +26,7 @@
     <None Include="Parked\WebViewManager_wpf.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="7.0.4" />
-    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.1661.34" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="8.0.4" />
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2420.47" />
   </ItemGroup>
 </Project>
