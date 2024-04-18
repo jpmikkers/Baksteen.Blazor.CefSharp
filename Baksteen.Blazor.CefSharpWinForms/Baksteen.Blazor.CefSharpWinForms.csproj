@@ -3,7 +3,7 @@
   <Title>Baksteen.CEF.Blazor</Title>
     <Summary>CEF BlazorWebView component</Summary>
     <Description>CEF BlazorWebView component</Description>
-    <TargetFrameworks>net7.0-windows;net8.0-windows</TargetFrameworks>
+    <TargetFrameworks>net8.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <RootNamespace>Baksteen.Blazor.CefSharpWinForms</RootNamespace>
     <PackageId>Baksteen.Blazor.CefSharpWinForms</PackageId>
