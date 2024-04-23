@@ -50,4 +50,9 @@ internal class WinFormsWebViewProxy : IBSWebView
     {
         _webView.Stop();
     }
+
+    public void Dispose()
+    {
+        _webView.Dispose();
+    }
 }

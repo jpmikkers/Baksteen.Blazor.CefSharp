@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Baksteen.Blazor.Contract;
 
-public interface IBSWebView
+public interface IBSWebView : IDisposable
 {
     bool CanGoBack { get; }
     bool CanGoForward { get; }

@@ -119,12 +119,14 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         // disposed it will prevent and Razor component code from working because it requires the WebView to exist.
         if (_webviewManager != null)
         {
-            await _webviewManager.DisposeAsync()
-                .ConfigureAwait(false);
+            //In Microsoft's code this dispose has an ConfigureAwait(false). However, the webview can only be disposed on the Dispatcher thread
+            //this means that it is better to just do a regular dispose and don't cause the rest of the code to run in some other random thread.
+            await _webviewManager.DisposeAsync();
             _webviewManager = null;
         }
 
         _webview.Dispose();
+        _webViewProxy.Dispose();
     }
 
     /// <inheritdoc />

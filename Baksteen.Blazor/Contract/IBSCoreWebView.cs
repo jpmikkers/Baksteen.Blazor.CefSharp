@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Baksteen.Blazor.Contract;
 
-public interface IBSCoreWebView
+public interface IBSCoreWebView : IDisposable
 {
     //
     // Summary:
