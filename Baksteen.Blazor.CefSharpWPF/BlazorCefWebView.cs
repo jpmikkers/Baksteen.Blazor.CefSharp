@@ -83,7 +83,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
 
-        if(_webview.IsBrowserInitialized)
+        if (_webview.IsBrowserInitialized)
         {
             //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
             _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
@@ -112,18 +112,21 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     {
         _webview.IsBrowserInitializedChanged -= _webview_IsBrowserInitializedChanged;
         _webview.ConsoleMessage -= _webview_ConsoleMessage;
+        _webview.LoadError -= _webview_LoadError;
 
         // Dispose this component's contents that user-written disposal logic and Razor component disposal logic will
         // complete first. Then dispose the WebView2 control. This order is critical because once the WebView2 is
         // disposed it will prevent and Razor component code from working because it requires the WebView to exist.
         if (_webviewManager != null)
         {
-            await _webviewManager.DisposeAsync()
-                .ConfigureAwait(false);
+            //In Microsoft's code this dispose has an ConfigureAwait(false). However, the webview can only be disposed on the Dispatcher thread
+            //this means that it is better to just do a regular dispose and don't cause the rest of the code to run in some other random thread.
+            await _webviewManager.DisposeAsync();
             _webviewManager = null;
         }
 
         _webview.Dispose();
+        _webViewProxy.Dispose();
     }
 
     /// <inheritdoc />

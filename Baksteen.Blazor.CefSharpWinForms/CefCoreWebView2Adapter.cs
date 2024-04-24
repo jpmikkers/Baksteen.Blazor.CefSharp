@@ -122,6 +122,15 @@ internal partial class CefCoreWebView2Adapter : IBSCoreWebView
         _webView.EvaluateScriptAsync($"__CSToJSMessageEventTarget.dispatchEvent(new CustomEvent('message', {{ detail : \"{messageJSStringLiteral}\" }}))");
     }
 
+    public void Dispose()
+    {
+        _webView.LifeSpanHandler = null;
+        _webView.RequestHandler = null;
+        _webView.JavascriptMessageReceived -= _webView_JavascriptMessageReceived;
+        _webView.FrameLoadEnd -= _webview_FrameLoadEnd;
+        _webView.AddressChanged -= _webView_AddressChanged;
+    }
+
     public Uri Source
     {
         get => new Uri(_webView.Address);

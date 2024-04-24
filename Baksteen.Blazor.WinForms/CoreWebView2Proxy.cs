@@ -210,4 +210,9 @@ internal class CoreWebView2Proxy : IBSCoreWebView
     {
         _coreWebView2.PostWebMessageAsString(webMessageAsString);
     }
+
+    public void Dispose()
+    {
+
+    }
 }

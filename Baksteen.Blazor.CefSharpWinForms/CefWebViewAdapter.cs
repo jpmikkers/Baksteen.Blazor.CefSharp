@@ -37,6 +37,11 @@ internal class CefWebViewAdapter : IBSWebView
 
     public bool CanGoForward => _webView.CanGoForward;
 
+    public void Dispose()
+    {
+        _coreWebView.Dispose();
+    }
+
     public Task EnsureCoreWebView2Async(CoreWebView2Environment environment)
     {
         return Task.CompletedTask;
