@@ -1,4 +1,4 @@
-using Baksteen.Blazor.Contract;
+using Baksteen.Blazor.CefSharpWPF.Glue;
 using CefSharp;
 using CefSharp.Wpf;
 using Microsoft.AspNetCore.Components;
@@ -16,10 +16,11 @@ using System.Windows.Controls;
 
 namespace Baksteen.Blazor.CefSharpWPF;
 
+
 /// <summary>
 /// A Windows Forms control for hosting Razor components locally in Windows desktop applications.
 /// </summary>
-public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDisposable
+public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsyncDisposable
 {
     public static readonly DependencyProperty ServicesProperty = DependencyProperty.Register(nameof(Services), typeof(IServiceProvider), typeof(CefSharpBlazorWebView), new PropertyMetadata(default(IServiceProvider)));
     public static readonly DependencyProperty RootComponentsProperty = DependencyProperty.Register(nameof(RootComponents), typeof(BSRootComponentsCollection), typeof(CefSharpBlazorWebView), new PropertyMetadata(default(BSRootComponentsCollection), (sender, eventArgs) =>
@@ -36,8 +37,10 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     }));
 
     private readonly ChromiumWebBrowser _webview;
-    private readonly IBSWebView _webViewProxy;
-    private BSWebViewManager? _webviewManager;
+
+    //private BSWebViewManager? _webviewManager;
+    private CefSharpWebViewManager? _webviewManager;
+
     private string? _hostPage;
     private bool _isDisposed;
 
@@ -94,7 +97,6 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
             _webview.LoadError += _webview_LoadError;
         }
 
-        _webViewProxy = new CefWebViewAdapter(_webview, ComponentsDispatcher);
         AddChild(_webview);
     }
 
@@ -126,7 +128,6 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         }
 
         _webview.Dispose();
-        _webViewProxy.Dispose();
     }
 
     /// <inheritdoc />
@@ -173,7 +174,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     }
 
     /// <summary>
-    /// Returns the inner <see cref="IBSWebView"/> used by this control.
+    /// Returns the inner webview used by this control.
     /// </summary>
     /// <remarks>
     /// Directly using some functionality of the inner web view can cause unexpected results because its behavior
@@ -181,7 +182,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     /// </remarks>
     [Browsable(false)]
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-    public IBSWebView WebView => _webViewProxy;
+    public ChromiumWebBrowser WebView => _webview;
 
     private Dispatcher ComponentsDispatcher { get; }
 
@@ -232,34 +233,30 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     /// </summary>
     [Category("Action")]
     [Description("Allows customizing how links are opened. By default, opens internal links in the webview and external links in an external app.")]
-    public EventHandler<BSUrlLoadingEventArgs>? UrlLoading;
+    public EventHandler<BSUrlLoadingEventArgs>? UrlLoading { get; set; }
 
-    /// <summary>
-    /// Allows customizing the web view before it is created.
-    /// </summary>
-    [Category("Action")]
-    [Description("Allows customizing the web view before it is created.")]
-    public EventHandler<BSBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing;
+    ///// <summary>
+    ///// Allows customizing the web view before it is created.
+    ///// </summary>
+    //[Category("Action")]
+    //[Description("Allows customizing the web view before it is created.")]
+    //public EventHandler<BSBlazorWebViewInitializingEventArgs>? BlazorWebViewInitializing { get; set; }
 
-    /// <summary>
-    /// Allows customizing the web view after it is created.
-    /// </summary>
-    [Category("Action")]
-    [Description("Allows customizing the web view after it is created.")]
-    public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized;
+    ///// <summary>
+    ///// Allows customizing the web view after it is created.
+    ///// </summary>
+    //[Category("Action")]
+    //[Description("Allows customizing the web view after it is created.")]
+    //public EventHandler<BSBlazorWebViewInitializedEventArgs>? BlazorWebViewInitialized { get; set; }
 
     private bool RequiredStartupPropertiesSet =>
         _webview != null &&
         HostPage != null &&
         Services != null;
 
-    object IBSBlazorWebView.PlatformSpecificComponent => _webview;
+    object ICefSharpBlazorWebView.PlatformSpecificComponent => _webview;
 
-    JSComponentConfigurationStore IBSBlazorWebView.JSComponents => RootComponents.JSComponents;
-
-    EventHandler<BSUrlLoadingEventArgs>? IBSBlazorWebView.UrlLoading { get; set; }
-    EventHandler<BSBlazorWebViewInitializingEventArgs>? IBSBlazorWebView.BlazorWebViewInitializing { get; set; }
-    EventHandler<BSBlazorWebViewInitializedEventArgs>? IBSBlazorWebView.BlazorWebViewInitialized { get; set; }
+    JSComponentConfigurationStore ICefSharpBlazorWebView.JSComponents => RootComponents.JSComponents;
 
     protected override void OnInitialized(EventArgs e)
     {
@@ -289,11 +286,11 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
 
         if (Services != null)
         {
-            if (Services.GetService<BSCefSharpBlazorMarkerService>() is null)
+            if (Services.GetService<CefSharpBlazorMarker>() is null)
             {
                 throw new InvalidOperationException(
                     "Unable to find the required services. " +
-                    $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(BSBlazorWebViewServiceCollectionExtensions.AddCefSharpBlazorWebView)}' in the application startup code.");
+                    $"Please add all the required services by calling '{nameof(IServiceCollection)}.{nameof(CefSharpBlazorServiceCollectionExtensions.AddCefSharpBlazorWebView)}' in the application startup code.");
             }
         }
 
@@ -317,6 +314,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
 
         var fileProvider = CreateFileProvider(contentRootDirFullPath);
 
+#if NEVER
         _webviewManager = new BSWebViewManager(
             _webViewProxy,
             Services!,
@@ -330,6 +328,20 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
             (args) => BlazorWebViewInitialized?.Invoke(this, args));
 
         BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
+#else
+        _webviewManager = new CefSharpWebViewManager(
+            _webview,
+            Services!,
+            ComponentsDispatcher,
+            fileProvider,
+            RootComponents.JSComponents,
+            contentRootRelativePath,
+            hostPageRelativePath,
+            onUrlLoadingAction: args => UrlLoading?.Invoke(this,args)
+        );
+
+        BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
+#endif
 
         Dispatcher.InvokeAsync(async () =>
         {
@@ -370,7 +382,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
     /// </summary>
     /// <param name="contentRootDir">The base directory to use for all requested assets, such as <c>wwwroot</c>.</param>
     /// <returns>Returns a <see cref="IFileProvider"/> for static assets.</returns>
-    public virtual IFileProvider CreateFileProvider(string contentRootDir)
+    private IFileProvider CreateFileProvider(string contentRootDir)
     {
         if (Directory.Exists(contentRootDir))
         {
@@ -385,7 +397,7 @@ public class CefSharpBlazorWebView : UserControl, IBSBlazorWebView, IAsyncDispos
         }
     }
 
-    void IBSBlazorWebView.AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
+    void ICefSharpBlazorWebView.AddRootComponents(IEnumerable<BSRootComponent> rootComponents)
     {
         foreach (var component in rootComponents)
             RootComponents.Add(component);
