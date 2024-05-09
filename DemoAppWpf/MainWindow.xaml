@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DemoAppWpf"
-        xmlns:contracts="clr-namespace:Baksteen.Blazor.Contract;assembly=Baksteen.Blazor"
         xmlns:blazor="clr-namespace:Baksteen.Blazor.CefSharpWPF;assembly=Baksteen.Blazor.CefSharpWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">

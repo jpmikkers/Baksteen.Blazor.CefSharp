@@ -1,4 +1,4 @@
-﻿using Baksteen.Blazor.Contract;
+﻿using Baksteen.Blazor.CefSharpWPF.Glue;
 using System.Windows;
 
 namespace DemoAppWpf
