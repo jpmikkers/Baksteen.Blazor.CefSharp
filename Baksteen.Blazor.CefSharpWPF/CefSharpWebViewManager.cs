@@ -17,6 +17,42 @@ namespace Baksteen.Blazor.CefSharpWPF;
 
 public partial class CefSharpWebViewManager : WebViewManager
 {
+    // The code inside blazor.webview.js is meant to be agnostic to specific webview technologies,
+    // so the following is an adaptor from blazor.webview.js conventions to CefSharp WebView APIs
+    private const string BlazorMessagingJS =
+        """
+        window.__CSToJSMessageEventTarget = new EventTarget();
+        
+        // this is a convenience function so we can dispatch a message from csharp to javascript more efficiently
+        window.__dispatchMessageFromCSToJS = function(message) {
+            __CSToJSMessageEventTarget.dispatchEvent(new CustomEvent('blzrmessage', { detail : message }))
+        };
+
+        window.external = {
+            // this means: send message from Javascript to C#
+            sendMessage: message => {
+                // console.log('sendMessage');
+                CefSharp.PostMessage(message);
+            },
+            // this means: hook up callback to receive messages from C# to Javascript
+            receiveMessage: callback => {
+                // console.log('receiveMessage');
+                // the 'e' argument in the listener is a CustomEvent() containing the message in its detail property.
+                // that CustomEvent() instance is created and dispatched in the PostWebMessageAsString() c# method 
+                window.__CSToJSMessageEventTarget.addEventListener('blzrmessage', e => callback(e.detail));
+            }
+        };
+                
+        Blazor.start();
+        (function () {
+        	window.onpageshow = function(event) {
+        		if (event.persisted) {
+        			window.location.reload();
+        		}
+        	};
+        })();
+        """;
+
     // Using an IP address means that WebView2 doesn't wait for any DNS resolution,
     // making it substantially faster. Note that this isn't real HTTP traffic, since
     // we intercept all the requests within this origin.
@@ -61,6 +97,7 @@ public partial class CefSharpWebViewManager : WebViewManager
             hostPagePathWithinFileProvider)
     {
         _webview = webView;
+
         _serviceProvider = serviceProvider;
         _dispatcher = dispatcher;
 
@@ -186,7 +223,7 @@ public partial class CefSharpWebViewManager : WebViewManager
     {
         if(e.Message is not null)
         {
-            // TODO, dispatch maybe?
+            // no need to dispatch this here because its done inside MessageReceived()
             MessageReceived(new Uri(e.Browser.MainFrame.Url), e.Message.ToString() ?? "");
         }
     }
@@ -197,34 +234,7 @@ public partial class CefSharpWebViewManager : WebViewManager
         if(e.Frame.IsMain)
         {
             Debug.WriteLine("main frame finished loading");
-
-            _ = e.Frame.EvaluateScriptAsync(@"
-
-                window.__CSToJSMessageEventTarget = new EventTarget();
-
-                window.external = {
-                    // this means: send message from Javascript to C#
-                    sendMessage: message => {
-                        CefSharp.PostMessage(message);
-                    },
-                    // this means: hook up callback to receive messages from C# to Javascript
-                    receiveMessage: callback => {
-                        // the 'e' argument in the listener is a CustomEvent() containing the message in its detail property.
-                        // that CustomEvent() instance is created and dispatched in the PostWebMessageAsString() c# method 
-                        window.__CSToJSMessageEventTarget.addEventListener('message', e => callback(e.detail));
-                    }
-                };
-        
-                Blazor.start();
-			    (function () {
-				    window.onpageshow = function(event) {
-					    if (event.persisted) {
-						    window.location.reload();
-					    }
-				    };
-			    })();
-
-                ");
+            _ = e.Frame.EvaluateScriptAsync(BlazorMessagingJS);
         }
     }
 
@@ -245,13 +255,12 @@ public partial class CefSharpWebViewManager : WebViewManager
 
     protected override void SendMessage(string message)
     {
-        var messageJSStringLiteral = JavaScriptEncoder.Default.Encode(message);
-        // seems like a good idea to wait on the previous message to be sent first?
         if(_prevMessageTask != null)
         {
+            // seems like a good idea to wait on the previous message to be sent first?
             _prevMessageTask.GetAwaiter().GetResult();
         }
-        _prevMessageTask = _webview.EvaluateScriptAsync($"__CSToJSMessageEventTarget.dispatchEvent(new CustomEvent('message', {{ detail : \"{messageJSStringLiteral}\" }}))");
+        _prevMessageTask = _webview.EvaluateScriptAsync("__dispatchMessageFromCSToJS", message);
     }
 
 #if PARKEDSTUFF

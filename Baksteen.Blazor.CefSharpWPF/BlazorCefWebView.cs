@@ -16,9 +16,8 @@ using System.Windows.Controls;
 
 namespace Baksteen.Blazor.CefSharpWPF;
 
-
 /// <summary>
-/// A Windows Forms control for hosting Razor components locally in Windows desktop applications.
+/// A control for hosting Razor components locally in Windows desktop applications.
 /// </summary>
 public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsyncDisposable
 {
@@ -76,12 +75,9 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
         }
 
         _webview = new ChromiumWebBrowser();
-        // Register your Custom LifeSpanHandler
 
-        //_webview.BrowserCore.
-
+#if PARKEDSTUFF
         //_webview.BrowserSettings = BrowserSettings.Create(true);
-        //_webview.R
         //_webview.BrowserSettings.Javascript = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptCloseWindows = CefState.Enabled;
         //_webview.BrowserSettings.JavascriptDomPaste = CefState.Enabled;
@@ -91,11 +87,14 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
             //_webview.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;             // TODO JMIK: not sure what to pick here
             _webview.JavascriptObjectRepository.Settings.AlwaysInterceptAsynchronously = true;     // TODO JMIK: not sure what to pick here
             _webview.JavascriptObjectRepository.Settings.JavascriptBindingApiEnabled = true;        // TODO JMIK: not sure what to pick here
-
-            _webview.ConsoleMessage += _webview_ConsoleMessage;
-            _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
-            _webview.LoadError += _webview_LoadError;
         }
+#endif
+
+#if DEBUG
+        _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
+        _webview.ConsoleMessage += _webview_ConsoleMessage;
+        _webview.LoadError += _webview_LoadError;
+#endif
 
         AddChild(_webview);
     }
@@ -151,23 +150,14 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
 
     private void _webview_IsBrowserInitializedChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
     {
-        //Debug.WriteLine("_webview_IsBrowserInitializedChanged");
-        // TODO JMIK: debugging doesnt work
-        //if(_webview.IsBrowserInitialized)
-        //{
-        //    using(var launchBrowser = new Process())
-        //    {
-        //        launchBrowser.StartInfo.UseShellExecute = true;
-        //        launchBrowser.StartInfo.FileName = new Uri("http://localhost:8088/").ToString();
-        //        launchBrowser.Start();
-        //    }
-        //}
+        Debug.WriteLine("_webview_IsBrowserInitializedChanged");
     }
 
     private void _webview_ConsoleMessage(object? sender, ConsoleMessageEventArgs e)
     {
         Debug.WriteLine($"webview_consolemessage({e.Level} {e.Message})");
     }
+
     private void _webview_LoadError(object? sender, LoadErrorEventArgs e)
     {
         Debug.WriteLine($"webview_LoadError(ErrorCode='{e.ErrorCode}' ErrorText='{e.ErrorText}' FailedUrl='{e.FailedUrl}')");
@@ -314,21 +304,6 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
 
         var fileProvider = CreateFileProvider(contentRootDirFullPath);
 
-#if NEVER
-        _webviewManager = new BSWebViewManager(
-            _webViewProxy,
-            Services!,
-            ComponentsDispatcher,
-            fileProvider,
-            RootComponents.JSComponents,
-            contentRootRelativePath,
-            hostPageRelativePath,
-            (args) => UrlLoading?.Invoke(this, args),
-            (args) => BlazorWebViewInitializing?.Invoke(this, args),
-            (args) => BlazorWebViewInitialized?.Invoke(this, args));
-
-        BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
-#else
         _webviewManager = new CefSharpWebViewManager(
             _webview,
             Services!,
@@ -341,7 +316,6 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
         );
 
         BSStaticContentHotReloadManager.AttachToWebViewManagerIfEnabled(_webviewManager);
-#endif
 
         Dispatcher.InvokeAsync(async () =>
         {
