@@ -1,4 +1,5 @@
-﻿using Baksteen.Blazor.CefSharpWPF.Glue;
+﻿namespace Baksteen.Blazor.CefSharpWPF;
+using Baksteen.Blazor.CefSharpWPF.Glue;
 using Baksteen.Blazor.CefSharpWPF.Handlers;
 using Baksteen.Blazor.CefSharpWPF.Tools;
 using CefSharp;
@@ -9,13 +10,8 @@ using Microsoft.AspNetCore.Components.WebView;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Text.Encodings.Web;
 
-namespace Baksteen.Blazor.CefSharpWPF;
-
-public partial class CefSharpWebViewManager : WebViewManager
+internal partial class CefSharpWebViewManager : WebViewManager
 {
     // The code inside blazor.webview.js is meant to be agnostic to specific webview technologies,
     // so the following is an adaptor from blazor.webview.js conventions to CefSharp WebView APIs
@@ -319,5 +315,13 @@ public partial class CefSharpWebViewManager : WebViewManager
             launchBrowser.StartInfo.FileName = uri.ToString();
             launchBrowser.Start();
         }
+    }
+
+    protected override async ValueTask DisposeAsyncCore()
+    {
+        _webview.FrameLoadEnd -= _webview_FrameLoadEnd;
+        _webview.JavascriptMessageReceived -= _webview_JavascriptMessageReceived;
+
+        await base.DisposeAsyncCore();
     }
 }

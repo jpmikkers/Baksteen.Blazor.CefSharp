@@ -1,7 +1,6 @@
-﻿using CefSharp;
+﻿namespace Baksteen.Blazor.CefSharpWPF;
+using CefSharp;
 using CefSharp.Handler;
-
-namespace Baksteen.Blazor.CefSharpWPF;
 
 internal partial class FilteringRequestHandler
 {

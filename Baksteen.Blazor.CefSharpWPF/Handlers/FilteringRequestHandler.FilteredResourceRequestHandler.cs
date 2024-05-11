@@ -1,24 +1,16 @@
-﻿using Baksteen.Blazor.CefSharpWPF.Glue;
+﻿namespace Baksteen.Blazor.CefSharpWPF;
+using Baksteen.Blazor.CefSharpWPF.Glue;
 using Baksteen.Blazor.CefSharpWPF.Tools;
 using CefSharp;
 using CefSharp.Handler;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 
-namespace Baksteen.Blazor.CefSharpWPF;
-
 internal partial class FilteringRequestHandler
 {
-    private class FilteredResourceRequestHandler : ResourceRequestHandler
+    private class FilteredResourceRequestHandler(
+        Func<BSWebResourceRequestedEventArgs, Task> onWebResourceRequested) : ResourceRequestHandler
     {
-        private readonly Func<BSWebResourceRequestedEventArgs, Task> _onWebResourceRequested;
-
-        public FilteredResourceRequestHandler(Func<BSWebResourceRequestedEventArgs, Task> onWebResourceRequested)
-        {
-            _onWebResourceRequested = onWebResourceRequested;
-        }
-
         protected override IResourceHandler GetResourceHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request)
         {
             var resourceType = request.ResourceType switch
@@ -59,7 +51,7 @@ internal partial class FilteringRequestHandler
             };
 
             // origally _parent.WebResourceRequested?.Invoke(_parent, webResourceRequestedEventArgs);
-            _onWebResourceRequested(webResourceRequestedEventArgs).GetAwaiter().GetResult();
+            onWebResourceRequested(webResourceRequestedEventArgs).GetAwaiter().GetResult();
 
             if(webResourceRequestedEventArgs.Response.StatusCode != (int)System.Net.HttpStatusCode.OK)
             {

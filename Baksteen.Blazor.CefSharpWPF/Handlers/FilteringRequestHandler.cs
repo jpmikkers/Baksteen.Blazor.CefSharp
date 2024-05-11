@@ -5,26 +5,18 @@ using System.Collections.Specialized;
 
 namespace Baksteen.Blazor.CefSharpWPF;
 
-internal partial class FilteringRequestHandler : RequestHandler
+internal partial class FilteringRequestHandler(
+    Action<BSNavigationStartingEventArgs> onNavigationStarting,
+    Func<BSWebResourceRequestedEventArgs, Task> onWebResourceRequested) : RequestHandler
 {
     private static Dictionary<string, string> ConvertHeaders(NameValueCollection nvc)
     {
         return nvc.AllKeys.Where(k => k != null).ToDictionary(k => k!, k => nvc[k]!);
     }
 
-    private readonly CancelingResourceRequestHandler _cancelingResourceRequestHandler;
-    private readonly FilteredResourceRequestHandler _filteredResourceRequestHandler;
+    private readonly CancelingResourceRequestHandler _cancelingResourceRequestHandler = new();
+    private readonly FilteredResourceRequestHandler _filteredResourceRequestHandler = new(onWebResourceRequested);
     private readonly List<(string url, BSCoreWebView2WebResourceContext context)> _filters = new();
-    private readonly Action<BSNavigationStartingEventArgs> _onNavigationStarting;
-
-    public FilteringRequestHandler(
-        Action<BSNavigationStartingEventArgs> onNavigationStarting,
-        Func<BSWebResourceRequestedEventArgs,Task> onWebResourceRequested)
-    {
-        _cancelingResourceRequestHandler = new();
-        _filteredResourceRequestHandler = new(onWebResourceRequested);
-        _onNavigationStarting = onNavigationStarting;
-    }
 
     public void AddWebResourceRequestedFilter(string uri, BSCoreWebView2WebResourceContext ResourceContext)
     {
@@ -56,7 +48,7 @@ internal partial class FilteringRequestHandler : RequestHandler
         if(isNavigation)
         {
             // this will ultimately result in an urlLoading event where the user can modify how the url is handled
-            _onNavigationStarting(navigationStartingEventArgs);
+            onNavigationStarting(navigationStartingEventArgs);
     
             if(navigationStartingEventArgs.Cancel)
                 return _cancelingResourceRequestHandler;
