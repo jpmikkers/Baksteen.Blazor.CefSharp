@@ -1,4 +1,5 @@
 ﻿//using Microsoft.Web.WebView2.Core;
+using CefSharp;
 using System;
 
 namespace Baksteen.Blazor.CefSharpWPF.Glue;
@@ -39,7 +40,7 @@ public class BSWebResourceRequestedEventArgs : EventArgs
     //
     // Summary:
     //     Gets the web resource request context.
-    public BSCoreWebView2WebResourceContext ResourceContext
+    public ResourceType ResourceContext
     {
         get; set;
     }

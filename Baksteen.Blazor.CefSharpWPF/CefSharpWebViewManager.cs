@@ -139,7 +139,8 @@ internal partial class CefSharpWebViewManager : WebViewManager
         //    //WebView = _webview,
         //});
 
-        _filteringRequestHandler.AddWebResourceRequestedFilter($"{AppOrigin}*", BSCoreWebView2WebResourceContext.All);
+        // cefsharp resourcetype enum doesn't have an 'All' entry, so lets use -1 as a replacement
+        _filteringRequestHandler.AddWebResourceRequestedFilter($"{AppOrigin}*", (CefSharp.ResourceType)(-1));
         // originally _webview.CoreWebView2.AddWebResourceRequestedFilter($"{AppOrigin}*", CoreWebView2WebResourceContext.All);
 
 #if PARKEDSTUFF
@@ -190,9 +191,20 @@ internal partial class CefSharpWebViewManager : WebViewManager
         // Unlike server-side code, we get told exactly why the browser is making the request,
         // so we can be smarter about fallback. We can ensure that 'fetch' requests never result
         // in fallback, for example.
-        var allowFallbackOnHostPage =
-            eventArgs.ResourceContext == BSCoreWebView2WebResourceContext.Document ||
-            eventArgs.ResourceContext == BSCoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
+        //var allowFallbackOnHostPage =
+        //    eventArgs.ResourceContext == BSCoreWebView2WebResourceContext.Document ||
+        //    eventArgs.ResourceContext == BSCoreWebView2WebResourceContext.Other; // e.g., dev tools requesting page source
+
+        var allowFallbackOnHostPage = eventArgs.ResourceContext switch
+        {
+            CefSharp.ResourceType.Xhr => false,
+            CefSharp.ResourceType.FontResource => false,
+            CefSharp.ResourceType.Script => false,
+            CefSharp.ResourceType.Image => false,
+            CefSharp.ResourceType.Stylesheet => false,
+            CefSharp.ResourceType.Media => false,
+            _ => true
+        };
 
         var requestUri = QueryStringHelper.RemovePossibleQueryString(eventArgs.Request.Uri);
         Debug.WriteLine($"HandleWebResourceRequest(uri={eventArgs.Request.Uri})");

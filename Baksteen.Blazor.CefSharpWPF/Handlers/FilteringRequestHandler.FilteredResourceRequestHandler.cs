@@ -13,17 +13,6 @@ internal partial class FilteringRequestHandler
     {
         protected override IResourceHandler GetResourceHandler(IWebBrowser chromiumWebBrowser, IBrowser browser, IFrame frame, IRequest request)
         {
-            var resourceType = request.ResourceType switch
-            {
-                ResourceType.Xhr => BSCoreWebView2WebResourceContext.Fetch,
-                ResourceType.FontResource => BSCoreWebView2WebResourceContext.Font,
-                ResourceType.Script => BSCoreWebView2WebResourceContext.Script,
-                ResourceType.Image => BSCoreWebView2WebResourceContext.Image,
-                ResourceType.Stylesheet => BSCoreWebView2WebResourceContext.Stylesheet,
-                ResourceType.Media => BSCoreWebView2WebResourceContext.Media,
-                _ => BSCoreWebView2WebResourceContext.Document
-            };
-
             var webResourceRequestedEventArgs = new BSWebResourceRequestedEventArgs
             {
                 Request = new BSWebResourceRequest
@@ -33,7 +22,7 @@ internal partial class FilteringRequestHandler
                     Headers = ConvertHeaders(request.Headers),
                     Method = request.Method,
                 },
-                ResourceContext = resourceType,
+                ResourceContext = request.ResourceType,
                 Response = null!
             };
 

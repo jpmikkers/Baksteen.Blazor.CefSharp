@@ -7,7 +7,6 @@ public static class CefSharpBlazorServiceCollectionExtensions
 {
     public static IServiceCollection AddCefSharpBlazorWebView(this IServiceCollection services)
     {
-        //services.TryAddSingleton<BSBlazorMarkerService>();
         services.TryAddSingleton<CefSharpBlazorMarker>();
         services.AddBlazorWebView();
         services.TryAddSingleton(new WebViewDeveloperToolsMarker { Enabled = false });

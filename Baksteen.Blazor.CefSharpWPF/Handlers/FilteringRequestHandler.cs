@@ -16,9 +16,9 @@ internal partial class FilteringRequestHandler(
 
     private readonly CancelingResourceRequestHandler _cancelingResourceRequestHandler = new();
     private readonly FilteredResourceRequestHandler _filteredResourceRequestHandler = new(onWebResourceRequested);
-    private readonly List<(string url, BSCoreWebView2WebResourceContext context)> _filters = new();
+    private readonly List<(string url, CefSharp.ResourceType context)> _filters = new();
 
-    public void AddWebResourceRequestedFilter(string uri, BSCoreWebView2WebResourceContext ResourceContext)
+    public void AddWebResourceRequestedFilter(string uri, CefSharp.ResourceType ResourceContext)
     {
         _filters.Add((uri, ResourceContext));
     }
