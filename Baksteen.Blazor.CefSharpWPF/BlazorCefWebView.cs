@@ -71,7 +71,9 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
 
         if (!DesignerProperties.GetIsInDesignMode(this))
         {
-            Cef.Initialize(settings);
+            // note to self: if the following crashes with 'missing locales en-us.pak' after upgrading cefsharp, check the following discussion:
+            // https://github.com/cefsharp/CefSharp/discussions/4207
+            Cef.Initialize(settings, performDependencyCheck: true);
         }
 
         _webview = new ChromiumWebBrowser();
