@@ -1,5 +1,4 @@
 ﻿using Baksteen.Blazor.CefSharpWPF;
-using DemoAppWpf.Data;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace DemoAppWpf

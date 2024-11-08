@@ -10,7 +10,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Baksteen.Blazor.CefSharpWPF;
 using CefSharp.BrowserSubprocess;
-using DemoAppWpf.Data;
 
 namespace DemoAppWpf
 {
@@ -25,7 +24,6 @@ namespace DemoAppWpf
             appBuilder.Logging.AddDebug();
             appBuilder.Services.AddCefSharpBlazorWebView();
             appBuilder.Services.AddCefSharpBlazorWebViewDeveloperTools();
-            appBuilder.Services.AddSingleton<WeatherForecastService>();
             using var myApp = appBuilder.Build();
 
             myApp.Start();

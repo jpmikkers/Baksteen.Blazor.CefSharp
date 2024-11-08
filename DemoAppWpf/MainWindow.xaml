@@ -5,13 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:DemoAppWpf"
         xmlns:blazor="http://baksteen.com/xaml/blazor"
+        xmlns:components="clr-namespace:DemoAppWpf.Components"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <DockPanel>
         <Label DockPanel.Dock="Top" Content="Hello World!" HorizontalAlignment="Center" VerticalAlignment="Center" />
         <blazor:CefSharpBlazorWebView x:Name="WebView" HostPage="index.html" Services="{Binding Services}">
             <blazor:CefSharpBlazorWebView.RootComponents>
-                    <blazor:BSRootComponent Selector="#app" ComponentType="{x:Type local:BlazorLayout}" />
+                    <blazor:BSRootComponent Selector="#app" ComponentType="{x:Type components:Routes }" />
             </blazor:CefSharpBlazorWebView.RootComponents>
         </blazor:CefSharpBlazorWebView>
     </DockPanel>
