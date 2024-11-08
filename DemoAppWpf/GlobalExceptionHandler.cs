@@ -21,7 +21,9 @@ public class GlobalExceptionHandler
 
             //ignore task canceled exception
             if (exception is TaskCanceledException)
+            {
                 return;
+            }
 
             return;
         }
