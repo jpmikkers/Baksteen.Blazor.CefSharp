@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components.Web;
-using CefSharp.Wpf;
+using CefSharp.Wpf.HwndHost;
 using Baksteen.Blazor.CefSharpWPF.Glue;
 
 namespace Baksteen.Blazor.CefSharpWPF;
