@@ -1,6 +1,7 @@
 using Baksteen.Blazor.CefSharpWPF.Glue;
 using CefSharp;
-using CefSharp.Wpf;
+//using CefSharp.Wpf;
+using CefSharp.Wpf.HwndHost;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.Extensions.DependencyInjection;
@@ -93,7 +94,7 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
 #endif
 
 #if DEBUG
-        _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
+       // _webview.IsBrowserInitializedChanged += _webview_IsBrowserInitializedChanged;
         _webview.ConsoleMessage += _webview_ConsoleMessage;
         _webview.LoadError += _webview_LoadError;
 #endif
@@ -113,7 +114,7 @@ public class CefSharpBlazorWebView : UserControl, ICefSharpBlazorWebView, IAsync
 
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        _webview.IsBrowserInitializedChanged -= _webview_IsBrowserInitializedChanged;
+        //_webview.IsBrowserInitializedChanged -= _webview_IsBrowserInitializedChanged;
         _webview.ConsoleMessage -= _webview_ConsoleMessage;
         _webview.LoadError -= _webview_LoadError;
 

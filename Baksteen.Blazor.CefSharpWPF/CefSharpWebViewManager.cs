@@ -3,7 +3,7 @@ using Baksteen.Blazor.CefSharpWPF.Glue;
 using Baksteen.Blazor.CefSharpWPF.Handlers;
 using Baksteen.Blazor.CefSharpWPF.Tools;
 using CefSharp;
-using CefSharp.Wpf;
+using CefSharp.Wpf.HwndHost;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebView;
