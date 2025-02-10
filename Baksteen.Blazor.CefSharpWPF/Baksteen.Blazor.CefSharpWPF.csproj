@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0-windows</TargetFramework>
+		<TargetFramework>net9.0-windows</TargetFramework>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -19,7 +19,7 @@
 		<PackageReference Include="chromiumembeddedframework.runtime" Version="132.3.1" />
 		<PackageReference Include="chromiumembeddedframework.runtime.win-x64" Version="132.3.1" />
 		<PackageReference Include="chromiumembeddedframework.runtime.win-x86" Version="132.3.1" />
-		<PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="8.0.10" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebView" Version="9.0.1" />
 	</ItemGroup>
 
 </Project>
